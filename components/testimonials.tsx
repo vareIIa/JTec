@@ -1,6 +1,6 @@
 const experience = [
   {
-    period: "Dez 2025 — Presente",
+    period: "Dez 2023 — Presente",
     role: "Owner / CEO",
     company: "JTEC",
     location: "Belo Horizonte, MG",

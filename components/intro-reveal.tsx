@@ -173,7 +173,7 @@ export default function IntroReveal() {
           <span className="text-white/25">/</span>
           <span>v1.0 · MMXXVI</span>
           <span className="text-white/25">/</span>
-          <span className="hidden sm:inline">Dez 2025 → {clock.getFullYear()}</span>
+          <span className="hidden sm:inline">Dez 2023 → {clock.getFullYear()}</span>
         </div>
 
         {/* Top-right: coords + live clock */}

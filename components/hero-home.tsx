@@ -31,7 +31,7 @@ export default function HeroHome() {
               <span className="text-gray-300">Belo Horizonte, MG</span>
               <span className="text-white/20">·</span>
               <span className="bg-gradient-to-r from-indigo-300 to-fuchsia-300 bg-clip-text font-medium text-transparent">
-                Desde Dez 2025
+                Desde Dez 2023
               </span>
             </div>
           </div>
