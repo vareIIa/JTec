@@ -1,6 +1,7 @@
 export const metadata = {
-  title: "Home - Open PRO",
-  description: "Page description",
+  title: "JTEC — Tecnologia & Inovação",
+  description:
+    "JTEC é uma empresa de tecnologia especializada em desenvolvimento fullstack, inteligência artificial e infraestrutura de servidores.",
 };
 
 import PageIllustration from "@/components/page-illustration";
@@ -17,7 +18,6 @@ export default function Home() {
       <Hero />
       <Workflows />
       <Features />
-      <Testimonials />
       <Cta />
     </>
   );
