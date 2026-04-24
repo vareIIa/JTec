@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import JtecLogoCircle from "@/components/ui/jtec-logo-circle";
 
 /**
  * Scroll-driven intro overlay (Lando-Norris-inspired density).
@@ -226,6 +227,20 @@ export default function IntroReveal() {
           ref={innerRef}
           className="relative flex h-full w-full flex-col items-center justify-center px-4"
         >
+          {/* Logo mark */}
+          <div className="mb-6 opacity-0 animate-[introFade_1.6s_ease-out_0.1s_forwards]">
+            <div className="relative flex items-center justify-center">
+              <div className="absolute h-32 w-32 rounded-full bg-gradient-to-br from-indigo-500/25 via-violet-500/20 to-fuchsia-500/25 blur-3xl" />
+              <div className="absolute h-20 w-20 rounded-full bg-violet-600/20 blur-xl" />
+              <JtecLogoCircle
+                size={88}
+                uid="intro"
+                className="relative"
+                style={{ filter: "drop-shadow(0 0 18px rgba(139,92,246,0.45)) drop-shadow(0 0 40px rgba(168,85,247,0.2))" }}
+              />
+            </div>
+          </div>
+
           {/* small kicker above wordmark */}
           <div className="mb-6 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.35em] text-white/50 opacity-0 animate-[introFade_1.2s_ease-out_0.2s_forwards]">
             <span className="h-px w-8 bg-white/40" />

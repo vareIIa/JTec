@@ -1,4 +1,5 @@
 import Logo from "./logo";
+import JtecLogoCircle from "./jtec-logo-circle";
 
 export default function Footer() {
   return (
@@ -7,13 +8,18 @@ export default function Footer() {
 
         {/* Huge gradient text watermark */}
         <div className="relative mb-10 overflow-hidden rounded-[2rem] glass-light p-10 md:p-16">
-          <div className="pointer-events-none absolute inset-0 select-none">
-            <div className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center">
-              <span className="block font-nacelle text-[20vw] font-semibold leading-none tracking-tight opacity-[0.08] md:text-[14rem]">
-                <span className="bg-gradient-to-br from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
-                  JTEC
-                </span>
-              </span>
+          {/* Logo watermark — fades into background */}
+          <div
+            className="pointer-events-none absolute inset-0 select-none flex items-center justify-center overflow-hidden"
+            style={{
+              maskImage:
+                "radial-gradient(ellipse 72% 72% at 50% 50%, black 20%, transparent 80%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 72% 72% at 50% 50%, black 20%, transparent 80%)",
+            }}
+          >
+            <div className="opacity-[0.065]">
+              <JtecLogoCircle size={400} uid="footer" />
             </div>
           </div>
 
