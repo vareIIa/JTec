@@ -26,10 +26,16 @@ const techStack = [
     items: ["Nginx", "Configuração de servidores", "Manutenção de ambientes"],
   },
   {
-    category: "Outros",
+    category: "Multi-idioma · IA",
+    color: "from-emerald-400 to-teal-400",
+    ring: "ring-emerald-400/30",
+    items: ["+30 idiomas", "Tradução em tempo real", "Copy gerada por IA", "Suporte 24/7"],
+  },
+  {
+    category: "Ferramentas",
     color: "from-amber-400 to-orange-400",
     ring: "ring-amber-400/30",
-    items: ["C#", "C", "Git", "Hardware", "Windows", "Pacote Office"],
+    items: ["Git", "CI/CD", "Figma", "Docker", "C#", "Linux · Windows"],
   },
 ];
 
@@ -37,7 +43,19 @@ const capabilities = [
   { k: "Fullstack", v: "React · Next.js · TypeScript · Django · PHP" },
   { k: "IA / LLMs", v: "Ollama · Llama.cpp · Deploy de modelos" },
   { k: "DevOps", v: "Nginx · Servidores · HTTP/HTTPS" },
-  { k: "Hardware", v: "Montagem · Formatação · Suporte técnico" },
+  { k: "Multi-idioma", v: "Atendimento em +30 idiomas via IA" },
+];
+
+const globalReach = [
+  { flag: "🌎", label: "Português" },
+  { flag: "🇬🇧", label: "English" },
+  { flag: "🇪🇸", label: "Español" },
+  { flag: "🇫🇷", label: "Français" },
+  { flag: "🇩🇪", label: "Deutsch" },
+  { flag: "🇮🇹", label: "Italiano" },
+  { flag: "🇯🇵", label: "日本語" },
+  { flag: "🇨🇳", label: "中文" },
+  { flag: "🌐", label: "+30 outros" },
 ];
 
 export default function Features() {
@@ -66,34 +84,53 @@ export default function Features() {
 
               <div className="space-y-5 text-lg leading-relaxed text-gray-400">
                 <p>
-                  Empresa de tecnologia nascida em Belo Horizonte/MG, liderada por{" "}
-                  <span className="font-semibold text-white">João Vitor C. Varella</span>,
-                  Desenvolvedor Fullstack Pleno com mais de 3 anos criando produtos reais.
+                  A <span className="font-semibold text-white">JTEC</span> é uma empresa de tecnologia
+                  nascida em Belo Horizonte/MG, especializada em desenvolvimento fullstack,
+                  inteligência artificial e infraestrutura de ponta.
                 </p>
                 <p>
-                  Nossa expertise vai do front-end moderno ao servidor de IA dedicado — passando por deploy de LLMs,
-                  infraestrutura escalável com Nginx, e manutenção técnica completa de hardware e software em ambientes Windows.
+                  Nossa expertise vai do front-end moderno ao servidor de IA dedicado — com deploy de LLMs,
+                  infraestrutura escalável com Nginx e integração de modelos proprietários que dão à empresa
+                  <span className="text-white"> fluência nativa em qualquer idioma</span>.
                 </p>
                 <p className="text-gray-500">
-                  Um time pequeno, focado, que entrega com a precisão e o cuidado que os melhores produtos do mundo exigem.
+                  Atendemos clientes do mundo todo com a precisão, performance e cuidado que produtos sérios exigem —
+                  sem barreiras de linguagem, sem fuso horário limitante.
                 </p>
               </div>
 
-              {/* Tags */}
-              <div className="mt-8 flex flex-wrap gap-2">
-                {[
-                  { label: "Inglês · Avançado", icon: "🇬🇧" },
-                  { label: "Espanhol · Intermediário", icon: "🇪🇸" },
-                  { label: "Belo Horizonte, MG", icon: "📍" },
-                ].map((tag) => (
-                  <span
-                    key={tag.label}
-                    className="glass-light inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs text-gray-300"
-                  >
-                    <span>{tag.icon}</span>
-                    {tag.label}
-                  </span>
-                ))}
+              {/* Global reach tags */}
+              <div className="mt-8">
+                <div className="mb-3 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.3em] text-gray-500">
+                  <span className="h-px w-6 bg-white/30" />
+                  Atendimento multilíngue · via IA
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {globalReach.map((l) => (
+                    <span
+                      key={l.label}
+                      className="glass-light inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] text-gray-300"
+                    >
+                      <span>{l.flag}</span>
+                      {l.label}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {[
+                    { label: "Belo Horizonte · Brasil", icon: "📍" },
+                    { label: "Atende globalmente", icon: "🌐" },
+                    { label: "Entrega 24/7", icon: "⚡" },
+                  ].map((tag) => (
+                    <span
+                      key={tag.label}
+                      className="glass-light inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs text-gray-300"
+                    >
+                      <span>{tag.icon}</span>
+                      {tag.label}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -108,17 +145,19 @@ export default function Features() {
                   <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
                   <div className="relative">
-                    {/* Avatar with initials */}
+                    {/* Brand block */}
                     <div className="mb-6 flex items-center gap-4">
                       <div className="relative">
                         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 blur-md" />
                         <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 font-nacelle text-xl font-semibold text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)]">
-                          JV
+                          JT
                         </div>
                       </div>
                       <div>
-                        <div className="font-nacelle text-lg font-semibold text-white">João Vitor C. Varella</div>
-                        <div className="text-sm text-gray-400">Owner / CEO · Dev Fullstack Pleno</div>
+                        <div className="font-nacelle text-lg font-semibold text-white">JTEC — Capacidades</div>
+                        <div className="text-sm text-gray-400">
+                          Liderada por <span className="text-white/80">João Vitor C. Varella</span>
+                        </div>
                       </div>
                     </div>
 
@@ -136,12 +175,13 @@ export default function Features() {
                       ))}
                     </div>
 
-                    {/* Progress bar fake skill viz */}
+                    {/* Progress bar skill viz */}
                     <div className="mt-6 space-y-3">
                       {[
-                        { label: "Fullstack Web", value: 95 },
-                        { label: "IA & LLMs", value: 88 },
-                        { label: "DevOps & Infra", value: 82 },
+                        { label: "Fullstack Web", value: 97 },
+                        { label: "IA &amp; LLMs", value: 94 },
+                        { label: "Multi-idioma (IA)", value: 100 },
+                        { label: "DevOps &amp; Infra", value: 90 },
                       ].map((skill) => (
                         <div key={skill.label}>
                           <div className="mb-1 flex items-center justify-between text-xs">
@@ -264,10 +304,10 @@ export default function Features() {
           >
             <div className="grid grid-cols-1 divide-white/5 md:grid-cols-4 md:divide-x">
               {[
-                { k: "100%", v: "Código próprio, sem boilerplate" },
-                { k: "30+", v: "Projetos entregues" },
-                { k: "24/7", v: "Infraestrutura monitorada" },
-                { k: "IA", v: "Integração nativa em produtos" },
+                { k: "30+", v: "Idiomas atendidos via IA" },
+                { k: "24/7", v: "Suporte e infra monitorada" },
+                { k: "99.9%", v: "Uptime garantido em produção" },
+                { k: "< 30s", v: "Deploy automatizado" },
               ].map((m, i) => (
                 <div key={i} className="p-6 text-center">
                   <div className="mb-1 font-nacelle text-3xl font-semibold bg-gradient-to-br from-white via-indigo-200 to-fuchsia-200 bg-clip-text text-transparent">
