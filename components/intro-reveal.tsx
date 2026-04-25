@@ -22,9 +22,10 @@ export default function IntroReveal() {
   const cornerBR = useRef<HTMLDivElement>(null);
   const subRef = useRef<HTMLDivElement>(null);
 
-  const [clock, setClock] = useState(() => new Date());
+  const [clock, setClock] = useState<Date | null>(null);
 
   useEffect(() => {
+    setClock(new Date());
     const t = setInterval(() => setClock(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
@@ -104,17 +105,17 @@ export default function IntroReveal() {
     };
   }, []);
 
-  const time = clock.toLocaleTimeString("pt-BR", {
+  const time = clock?.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
-  });
-  const date = clock.toLocaleDateString("pt-BR", {
+  }) ?? "--:--:--";
+  const date = clock?.toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  });
+  }) ?? "--/--/----";
 
   return (
     <>
@@ -174,7 +175,7 @@ export default function IntroReveal() {
           <span className="text-white/25">/</span>
           <span>v1.0 · MMXXVI</span>
           <span className="text-white/25">/</span>
-          <span className="hidden sm:inline">Dez 2023 → {clock.getFullYear()}</span>
+          <span className="hidden sm:inline">Dez 2023 → {clock?.getFullYear() ?? "----"}</span>
         </div>
 
         {/* Top-right: coords + live clock */}
