@@ -347,8 +347,8 @@ curl -X POST http://localhost:8000/api/orders/create/ \
 ## 📄 License & Credits
 
 - Frontend template based on [Open by Cruip](https://github.com/cruip/open-react-template)
-- Built with ❤️ by JTEC — João Vitor C. Varella
-- **Contact:** jvvarella@hotmail.com | [(31) 98597-5200](tel:+5531985975200) | [jotatec.netlify.app](https://jotatec.netlify.app)
+- Built with ❤️ by JTEC — Fundadores
+- **Contact:** jtecBH@hotmail.com | [jotatec.netlify.app](https://jotatec.netlify.app)
 
 ---
 

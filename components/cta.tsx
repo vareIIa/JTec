@@ -49,7 +49,7 @@ export default function Cta() {
               {/* Primary CTA */}
               <div className="flex flex-col gap-3 sm:flex-row" data-aos="fade-up" data-aos-delay={300}>
                 <a
-                  href="mailto:jvvarella@hotmail.com"
+                  href="mailto:jtecBH@hotmail.com"
                   className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 px-7 py-3 font-medium text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_10px_40px_-10px_rgba(139,92,246,0.7)] transition-all hover:scale-[1.03]"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -60,15 +60,6 @@ export default function Cta() {
                   <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
                 </a>
 
-                <a
-                  href="tel:+5531985975200"
-                  className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-7 py-3 font-medium text-gray-200 backdrop-blur-xl transition-all hover:border-white/20 hover:bg-white/[0.06]"
-                >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                  Ligar agora
-                </a>
               </div>
 
               {/* Availability */}
@@ -99,20 +90,9 @@ export default function Cta() {
                     </svg>
                   ),
                   label: "E-mail",
-                  value: "jvvarella@hotmail.com",
-                  href: "mailto:jvvarella@hotmail.com",
+                  value: "jtecBH@hotmail.com",
+                  href: "mailto:jtecBH@hotmail.com",
                   gradient: "from-indigo-500 to-violet-500",
-                },
-                {
-                  icon: (
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                  ),
-                  label: "Telefone · WhatsApp",
-                  value: "(31) 98597-5200",
-                  href: "tel:+5531985975200",
-                  gradient: "from-violet-500 to-fuchsia-500",
                 },
                 {
                   icon: (
@@ -125,19 +105,6 @@ export default function Cta() {
                   value: "Belo Horizonte, MG · Brasil",
                   href: null,
                   gradient: "from-fuchsia-500 to-pink-500",
-                },
-                {
-                  icon: (
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                      <rect x="2" y="9" width="4" height="12" />
-                      <circle cx="4" cy="4" r="2" />
-                    </svg>
-                  ),
-                  label: "LinkedIn",
-                  value: "João Vitor C. Varella",
-                  href: "https://linkedin.com/in/joaovitorvarella",
-                  gradient: "from-blue-500 to-indigo-500",
                 },
               ].map((card, i) => {
                 const Element = card.href ? "a" : "div";
