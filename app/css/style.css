@@ -128,6 +128,20 @@
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4.
 */
+/* ── Modal keyframes ── */
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+@keyframes counterUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
 /* ── Intro animation keyframes (must be global, not inside @theme) ── */
 @keyframes introWord {
   0% {

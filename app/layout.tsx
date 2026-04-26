@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 
 import Header from "@/components/ui/header";
+import CursorGlow from "@/components/ui/cursor-glow";
 import Providers from "./providers";
 
 const inter = Inter({
@@ -56,6 +57,7 @@ export default function RootLayout({
         className={`${inter.variable} ${nacelle.variable} bg-gray-950 font-inter text-base text-gray-200 antialiased`}
       >
         <Providers>
+          <CursorGlow />
           <div className="flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
             <Header />
             {children}
