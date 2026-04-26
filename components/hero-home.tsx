@@ -101,6 +101,22 @@ export default function HeroHome() {
                   <path d="M5 12h14M13 5l7 7-7 7" />
                 </svg>
               </Link>
+              <Link
+                href="/portfolio"
+                className="group relative inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.02] px-7 py-3 font-medium text-white backdrop-blur-2xl transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-gradient-to-b hover:from-white/[0.12] hover:to-white/[0.04] shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.1)] sm:w-auto"
+              >
+                <span className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)]">
+                  <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                  </svg>
+                </span>
+                <span className="relative z-10">Ver portfólio</span>
+                <svg className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M13 5l7 7-7 7" />
+                </svg>
+              </Link>
               <a
                 href="#servicos"
                 className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-full border border-white/10 bg-white/[0.03] px-7 py-3 font-medium text-gray-200 backdrop-blur-xl transition-all hover:border-white/20 hover:bg-white/[0.06] sm:w-auto"

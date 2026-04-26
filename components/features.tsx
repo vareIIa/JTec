@@ -156,7 +156,7 @@ export default function Features() {
                       <div>
                         <div className="font-nacelle text-lg font-semibold text-white">JTEC — Capacidades</div>
                         <div className="text-sm text-gray-400">
-                          Liderada por <span className="text-white/80">João Vitor C. Varella</span>
+                          Desenvolvida pelos fundadores da JTEC
                         </div>
                       </div>
                     </div>
