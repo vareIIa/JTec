@@ -1,17 +1,18 @@
 export const metadata = {
-  title: "Loja JTEC — Templates, IA, Consultoria e mais",
+  title: "Portfólio JTEC — Projetos que transformam",
   description:
-    "Produtos e serviços digitais da JTEC: templates Next.js, servidores de IA dedicados, consultoria fullstack, cursos e mais.",
+    "Centenas de projetos digitais entregues: IA, e-commerce, SaaS, landing pages e sistemas sob medida. Conheça o que a JTEC já produziu.",
 };
 
 import Link from "next/link";
-import StoreClient from "@/components/store/store-client";
+import PortfolioClient from "@/components/portfolio/portfolio-client";
 
-export default function LojaPage() {
+export default function PortfolioPage() {
   return (
     <section className="relative pt-32 pb-24 md:pt-40 md:pb-32">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Breadcrumb / back */}
+
+        {/* Breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-xs">
           <Link
             href="/"
@@ -23,13 +24,13 @@ export default function LojaPage() {
             JTEC
           </Link>
           <span className="text-white/20">/</span>
-          <span className="text-gray-300">Loja</span>
+          <span className="text-gray-300">Portfólio</span>
         </div>
 
-        {/* Hero of the store */}
+        {/* Hero */}
         <div className="relative mb-14 overflow-hidden rounded-[2rem] glass-heavy p-8 md:p-12">
-          <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 opacity-30 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-gradient-to-br from-cyan-500 to-indigo-500 opacity-20 blur-3xl" />
+          <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 opacity-25 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-gradient-to-br from-fuchsia-500 to-rose-500 opacity-20 blur-3xl" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
 
           <div className="relative grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-end">
@@ -39,10 +40,10 @@ export default function LojaPage() {
                 data-aos="fade-up"
               >
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
                 </span>
-                Loja JTEC · Produtos digitais
+                Portfólio JTEC · Projetos reais
               </div>
 
               <h1
@@ -50,11 +51,11 @@ export default function LojaPage() {
                 data-aos="fade-up"
                 data-aos-delay={100}
               >
-                <span className="text-white/90">Ferramentas que </span>
+                <span className="text-white/90">Cada projeto, </span>
                 <span className="bg-gradient-to-br from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
-                  elevam
+                  uma história
                 </span>
-                <span className="text-white/90"> o seu produto.</span>
+                <span className="text-white/90"> de impacto.</span>
               </h1>
 
               <p
@@ -62,53 +63,42 @@ export default function LojaPage() {
                 data-aos="fade-up"
                 data-aos-delay={200}
               >
-                Templates prontos, infraestrutura de IA, consultoria especializada e cursos — com entrega digital imediata e garantia de 7 dias.
+                Centenas de projetos entregues — de chatbots com IA a plataformas SaaS completas.
+                Cada linha de código construída com propósito e obsessão por qualidade.
               </p>
 
-              {/* Trust strip */}
               <div
                 className="mt-8 flex flex-wrap items-center gap-5 text-xs text-gray-400"
                 data-aos="fade-up"
                 data-aos-delay={300}
               >
-                <div className="flex items-center gap-1.5">
-                  <svg className="h-4 w-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                  Entrega digital instantânea
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <svg className="h-4 w-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                  Garantia de 7 dias
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <svg className="h-4 w-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                  Suporte em +30 idiomas via IA
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <svg className="h-4 w-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                  Pagamento seguro
-                </div>
+                {[
+                  { icon: "✓", text: "Entrega no prazo" },
+                  { icon: "✓", text: "Código limpo e escalável" },
+                  { icon: "✓", text: "Suporte pós-entrega" },
+                  { icon: "✓", text: "Do MVP ao produto completo" },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-center gap-1.5">
+                    <svg className="h-4 w-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    {text}
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Stats card */}
+            {/* Stats */}
             <div
               className="relative grid grid-cols-2 gap-3"
               data-aos="fade-left"
               data-aos-delay={200}
             >
               {[
-                { k: "8.9k+", v: "Clientes atendidos" },
-                { k: "4.9", v: "Média de avaliação" },
-                { k: "7d", v: "Garantia total" },
-                { k: "24/7", v: "Entrega automática" },
+                { k: "200+", v: "Projetos entregues" },
+                { k: "98%", v: "Clientes satisfeitos" },
+                { k: "5k+", v: "Usuários impactados" },
+                { k: "7", v: "Países atendidos" },
               ].map((s) => (
                 <div
                   key={s.k}
@@ -126,8 +116,8 @@ export default function LojaPage() {
           </div>
         </div>
 
-        {/* Store client (filter + grid) */}
-        <StoreClient />
+        {/* Portfolio client (filters + projects) */}
+        <PortfolioClient />
       </div>
     </section>
   );

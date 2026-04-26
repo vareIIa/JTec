@@ -88,12 +88,13 @@ export default function Footer() {
               <h3 className="mb-4 text-xs uppercase tracking-[0.2em] text-gray-500">Navegação</h3>
               <ul className="space-y-2 text-sm">
                 {[
-                  { label: "Início", href: "#" },
-                  { label: "Serviços", href: "#servicos" },
-                  { label: "Sobre", href: "#sobre" },
-                  { label: "Stack", href: "#tecnologias" },
-                  { label: "Experiência", href: "#experiencia" },
-                  { label: "Contato", href: "#contato" },
+                  { label: "Início", href: "/" },
+                  { label: "Serviços", href: "/#servicos" },
+                  { label: "Sobre", href: "/#sobre" },
+                  { label: "Stack", href: "/#tecnologias" },
+                  { label: "Portfólio", href: "/portfolio" },
+                  { label: "Loja", href: "/loja" },
+                  { label: "Contato", href: "/#contato" },
                 ].map((link) => (
                   <li key={link.label}>
                     <a

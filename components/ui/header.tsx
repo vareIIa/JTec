@@ -35,6 +35,7 @@ export default function Header() {
               { href: "/#servicos", label: "Serviços" },
               { href: "/#sobre", label: "Sobre" },
               { href: "/#tecnologias", label: "Stack" },
+              { href: "/portfolio", label: "Portfólio", highlight: true },
               { href: "/loja", label: "Loja", highlight: true },
             ].map((item) => (
               <Link
