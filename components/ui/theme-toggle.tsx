@@ -5,29 +5,21 @@ import { useEffect, useState } from "react";
 
 const TRANSITION_ID = "jtec-theme-transition-canvas";
 
-/* ─── Helpers ───────────────────────────────────────────────────────────── */
 const setupCanvas = (): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D; W: number; H: number } | null => {
   if (document.getElementById(TRANSITION_ID)) return null;
   const canvas = document.createElement("canvas");
   canvas.id = TRANSITION_ID;
-  canvas.style.cssText =
-    "position:fixed;inset:0;width:100vw;height:100vh;z-index:9999;pointer-events:none;contain:strict;";
+  canvas.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;z-index:9999;pointer-events:none;contain:strict;";
   document.body.appendChild(canvas);
   document.body.classList.add("theme-transitioning");
-
-  // DPR=1 for transition canvas — it's a full-screen overlay, no one notices 1x vs 2x
   const W = window.innerWidth;
   const H = window.innerHeight;
   canvas.width = W;
   canvas.height = H;
   canvas.style.width = W + "px";
   canvas.style.height = H + "px";
-
   const ctx = canvas.getContext("2d", { alpha: true });
-  if (!ctx) {
-    canvas.remove();
-    return null;
-  }
+  if (!ctx) { canvas.remove(); return null; }
   return { canvas, ctx, W, H };
 };
 
@@ -36,273 +28,401 @@ const teardown = (canvas: HTMLCanvasElement) => {
   document.body.classList.remove("theme-transitioning");
 };
 
-/* ─── Water Flood (light-mode entry) ──────────────────────────────────────
-   Performance-tuned: DPR=1, STEP=6, no shadowBlur, 2 layers, 3 caustics. */
+/* ── Water sound (pink noise + bandpass sweep) ─────────────────────────── */
+function playWaterSound() {
+  try {
+    const ac = new AudioContext();
+    const dur = 2.2;
+    const sr = ac.sampleRate;
+    const buf = ac.createBuffer(2, Math.ceil(sr * dur), sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0;
+      for (let i = 0; i < d.length; i++) {
+        const w = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + w * 0.0555179;
+        b1 = 0.99332 * b1 + w * 0.0750759;
+        b2 = 0.96900 * b2 + w * 0.1538520;
+        b3 = 0.86650 * b3 + w * 0.3104856;
+        b4 = 0.55000 * b4 + w * 0.5329522;
+        b5 = -0.7616 * b5 - w * 0.0168980;
+        d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + w * 0.5362) * 0.11;
+      }
+    }
+    const src = ac.createBufferSource();
+    src.buffer = buf;
+    const bp = ac.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.setValueAtTime(180, ac.currentTime);
+    bp.frequency.linearRampToValueAtTime(1600, ac.currentTime + 0.65);
+    bp.frequency.linearRampToValueAtTime(700, ac.currentTime + dur);
+    bp.Q.value = 0.9;
+    const ls = ac.createBiquadFilter();
+    ls.type = "lowshelf";
+    ls.frequency.value = 280;
+    ls.gain.value = 5;
+    const gain = ac.createGain();
+    gain.gain.setValueAtTime(0, ac.currentTime);
+    gain.gain.linearRampToValueAtTime(0.55, ac.currentTime + 0.14);
+    gain.gain.setValueAtTime(0.55, ac.currentTime + dur - 0.45);
+    gain.gain.linearRampToValueAtTime(0, ac.currentTime + dur);
+    src.connect(bp); bp.connect(ls); ls.connect(gain); gain.connect(ac.destination);
+    src.start(); src.stop(ac.currentTime + dur);
+    setTimeout(() => ac.close(), (dur + 0.5) * 1000);
+  } catch (_) {}
+}
+
+/* ── Storm sound (brown noise rumble + wind + lightning crackle) ─────────  */
+function playStormSound() {
+  try {
+    const ac = new AudioContext();
+    const dur = 2.4;
+    const sr = ac.sampleRate;
+
+    // Brown noise (deep bass rumble for thunder)
+    const tbuf = ac.createBuffer(2, Math.ceil(sr * dur), sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = tbuf.getChannelData(ch);
+      let last = 0;
+      for (let i = 0; i < d.length; i++) {
+        const w = Math.random() * 2 - 1;
+        last = (last + 0.02 * w) / 1.02;
+        d[i] = last * 3.5;
+      }
+    }
+    const tsrc = ac.createBufferSource();
+    tsrc.buffer = tbuf;
+    const tlp = ac.createBiquadFilter();
+    tlp.type = "lowpass";
+    tlp.frequency.value = 160;
+    tlp.Q.value = 0.8;
+    const tls = ac.createBiquadFilter();
+    tls.type = "lowshelf";
+    tls.frequency.value = 80;
+    tls.gain.value = 9;
+    const tg = ac.createGain();
+    tg.gain.setValueAtTime(0, ac.currentTime);
+    tg.gain.linearRampToValueAtTime(0.75, ac.currentTime + 0.25);
+    tg.gain.setValueAtTime(0.75, ac.currentTime + 0.7);
+    tg.gain.linearRampToValueAtTime(0.55, ac.currentTime + 1.1);
+    tg.gain.linearRampToValueAtTime(0.68, ac.currentTime + 1.35);
+    tg.gain.linearRampToValueAtTime(0, ac.currentTime + dur);
+    tsrc.connect(tlp); tlp.connect(tls); tls.connect(tg); tg.connect(ac.destination);
+    tsrc.start(); tsrc.stop(ac.currentTime + dur);
+
+    // Wind — bandpass sweeping down
+    const wbuf = ac.createBuffer(1, Math.ceil(sr * dur), sr);
+    const wd = wbuf.getChannelData(0);
+    for (let i = 0; i < wd.length; i++) wd[i] = Math.random() * 2 - 1;
+    const wsrc = ac.createBufferSource();
+    wsrc.buffer = wbuf;
+    const wbp = ac.createBiquadFilter();
+    wbp.type = "bandpass";
+    wbp.frequency.setValueAtTime(900, ac.currentTime);
+    wbp.frequency.linearRampToValueAtTime(280, ac.currentTime + dur);
+    wbp.Q.value = 0.6;
+    const wg = ac.createGain();
+    wg.gain.setValueAtTime(0, ac.currentTime);
+    wg.gain.linearRampToValueAtTime(0.22, ac.currentTime + 0.4);
+    wg.gain.linearRampToValueAtTime(0, ac.currentTime + dur);
+    wsrc.connect(wbp); wbp.connect(wg); wg.connect(ac.destination);
+    wsrc.start(); wsrc.stop(ac.currentTime + dur);
+
+    // Lightning crackle — two short high-freq bursts
+    for (let b = 0; b < 2; b++) {
+      const t0 = ac.currentTime + 0.38 + b * 0.22;
+      const lbuf = ac.createBuffer(1, Math.ceil(sr * 0.09), sr);
+      const ld = lbuf.getChannelData(0);
+      for (let i = 0; i < ld.length; i++) ld[i] = Math.random() * 2 - 1;
+      const lsrc = ac.createBufferSource();
+      lsrc.buffer = lbuf;
+      const lhp = ac.createBiquadFilter();
+      lhp.type = "highpass";
+      lhp.frequency.value = 3000;
+      const lg = ac.createGain();
+      lg.gain.setValueAtTime(0.38 - b * 0.08, t0);
+      lg.gain.exponentialRampToValueAtTime(0.001, t0 + 0.09);
+      lsrc.connect(lhp); lhp.connect(lg); lg.connect(ac.destination);
+      lsrc.start(t0); lsrc.stop(t0 + 0.1);
+    }
+
+    setTimeout(() => ac.close(), (dur + 0.5) * 1000);
+  } catch (_) {}
+}
+
+/* ── Water Flood (light-mode entry) ────────────────────────────────────── */
 function playWaterFlood(onCover: () => void) {
   const setup = setupCanvas();
   if (!setup) return;
   const { canvas, ctx, W, H } = setup;
+  playWaterSound();
 
-  const DURATION = 1800;
-  const FRAME_MS = 1000 / 45; // 45fps cap
-  const STEP = 6; // was 2 → 60% fewer points
+  const DURATION = 2000;
+  const STEP = 4;
   const start = performance.now();
-  let lastFrame = 0;
   let covered = false;
 
   type WaveLayer = {
     speed: number; offset: number; amp: number;
-    freqA: number; freqB: number; timeRate: number; phase: number;
-    colorA: string; colorB: string; foamColor: string;
-    foamWidthOuter: number; foamWidthInner: number;
-    bodyAlpha: number; foamAlpha: number; bubbles: number;
+    freqA: number; freqB: number; freqC: number;
+    timeRate: number; phase: number;
+    colorA: string; colorB: string;
+    foamAlpha: number; bubbles: number;
   };
-
   const LAYERS: WaveLayer[] = [
-    {
-      speed: 1.0, offset: -0.28, amp: 36,
-      freqA: 2.6, freqB: 5.1, timeRate: 0.0017, phase: 0,
-      colorA: "rgba(28,138,178,0.82)", colorB: "rgba(90,210,238,0.92)",
-      foamColor: "rgba(255,255,255,0.92)",
-      foamWidthOuter: 18, foamWidthInner: 5,
-      bodyAlpha: 0.95, foamAlpha: 0.88, bubbles: 10,
-    },
-    {
-      speed: 1.14, offset: -0.14, amp: 24,
-      freqA: 3.3, freqB: 6.4, timeRate: 0.0024, phase: Math.PI * 0.55,
-      colorA: "rgba(68,190,228,0.65)", colorB: "rgba(200,242,252,0.72)",
-      foamColor: "rgba(255,255,255,0.98)",
-      foamWidthOuter: 12, foamWidthInner: 3,
-      bodyAlpha: 0.78, foamAlpha: 0.82, bubbles: 8,
-    },
+    { speed: 0.88, offset: -0.38, amp: 44, freqA: 1.8, freqB: 3.9, freqC: 7.1, timeRate: 0.0012, phase: Math.PI * 1.1, colorA: "rgba(10,80,115,0.85)", colorB: "rgba(26,128,166,0.82)", foamAlpha: 0.48, bubbles: 8 },
+    { speed: 1.0,  offset: -0.24, amp: 34, freqA: 2.5, freqB: 5.2, freqC: 9.3, timeRate: 0.0017, phase: 0,            colorA: "rgba(20,138,178,0.90)", colorB: "rgba(60,192,228,0.94)", foamAlpha: 0.82, bubbles: 12 },
+    { speed: 1.16, offset: -0.12, amp: 24, freqA: 3.3, freqB: 6.6, freqC: 11.2, timeRate: 0.0023, phase: Math.PI*0.6, colorA: "rgba(65,198,232,0.74)", colorB: "rgba(170,238,252,0.80)", foamAlpha: 0.97, bubbles: 16 },
   ];
 
-  const ease = (t: number) =>
-    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
+  const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const sampleWave = (leadX: number, yT: number, l: WaveLayer, ts: number) =>
-    leadX +
-    Math.sin(yT * Math.PI * 2 * l.freqA + ts + l.phase) * l.amp +
-    Math.sin(yT * Math.PI * 2 * l.freqB + ts * 0.7 + l.phase * 1.3) * (l.amp * 0.3);
+    leadX
+    + Math.sin(yT * Math.PI * 2 * l.freqA + ts + l.phase) * l.amp
+    + Math.sin(yT * Math.PI * 2 * l.freqB + ts * 0.72 + l.phase * 1.3) * (l.amp * 0.28)
+    + Math.sin(yT * Math.PI * 2 * l.freqC + ts * 0.41 + l.phase * 0.7) * (l.amp * 0.11);
 
   const drawLayer = (l: WaveLayer, leadX: number, envAlpha: number, now: number) => {
     const ts = now * l.timeRate;
-
-    // Body
     ctx.save();
-    ctx.globalAlpha = envAlpha * l.bodyAlpha;
+    ctx.globalAlpha = envAlpha;
     ctx.beginPath();
-    ctx.moveTo(-W * 0.12, 0);
-    ctx.lineTo(-W * 0.12, H);
+    ctx.moveTo(-W * 0.1, 0); ctx.lineTo(-W * 0.1, H);
     ctx.lineTo(sampleWave(leadX, 1, l, ts), H);
-    for (let y = H; y >= 0; y -= STEP) {
-      ctx.lineTo(sampleWave(leadX, y / H, l, ts), y);
-    }
+    for (let y = H; y >= 0; y -= STEP) ctx.lineTo(sampleWave(leadX, y / H, l, ts), y);
     ctx.closePath();
-    const bg = ctx.createLinearGradient(leadX - W * 0.9, 0, leadX + l.amp, 0);
-    bg.addColorStop(0, l.colorA);
-    bg.addColorStop(1, l.colorB);
-    ctx.fillStyle = bg;
-    ctx.fill();
-    ctx.restore();
+    const bg = ctx.createLinearGradient(leadX - W * 0.88, 0, leadX + l.amp, 0);
+    bg.addColorStop(0, l.colorA); bg.addColorStop(0.72, l.colorB); bg.addColorStop(1, l.colorB);
+    ctx.fillStyle = bg; ctx.fill(); ctx.restore();
 
-    // Caustic streaks (only 3, no per-streak gradient — use solid fill)
-    ctx.save();
-    ctx.globalCompositeOperation = "screen";
-    ctx.globalAlpha = envAlpha * 0.16;
-    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.save(); ctx.globalCompositeOperation = "screen"; ctx.globalAlpha = envAlpha * 0.15;
+    ctx.fillStyle = "rgba(180,242,255,0.85)";
     for (let s = 0; s < 3; s++) {
-      const seed = s * 1.618 + ts * 0.4;
-      const sx = leadX - W * 0.12 * (s + 1.2) + Math.sin(seed) * 12;
-      const sw = 5 + Math.abs(Math.sin(seed * 0.7)) * 8;
-      ctx.beginPath();
-      ctx.moveTo(sx, 0); ctx.lineTo(sx + sw, 0);
-      ctx.lineTo(sx + sw * 0.4, H); ctx.lineTo(sx - sw * 0.4, H);
-      ctx.closePath();
-      ctx.fill();
+      const seed = s * 1.618 + ts * 0.35;
+      const sx = leadX - W * 0.11 * (s + 1.3) + Math.sin(seed) * 11;
+      const sw2 = 4 + Math.abs(Math.sin(seed * 0.7)) * 8;
+      ctx.beginPath(); ctx.moveTo(sx,0); ctx.lineTo(sx+sw2,0); ctx.lineTo(sx+sw2*0.3,H); ctx.lineTo(sx-sw2*0.3,H); ctx.closePath(); ctx.fill();
     }
     ctx.restore();
 
-    // Foam — two strokes (wide dim + narrow bright), NO shadowBlur
-    ctx.save();
-    ctx.globalAlpha = envAlpha * l.foamAlpha;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    // Build foam path once, reuse for both strokes
-    ctx.beginPath();
-    ctx.moveTo(sampleWave(leadX, 0, l, ts), 0);
-    for (let y = STEP; y <= H; y += STEP) {
-      ctx.lineTo(sampleWave(leadX, y / H, l, ts), y);
-    }
-    ctx.strokeStyle = "rgba(195,240,255,0.35)";
-    ctx.lineWidth = l.foamWidthOuter;
-    ctx.stroke();
-    ctx.strokeStyle = l.foamColor;
-    ctx.lineWidth = l.foamWidthInner;
-    ctx.stroke();
+    ctx.save(); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.beginPath(); ctx.moveTo(sampleWave(leadX, 0, l, ts), 0);
+    for (let y = STEP; y <= H; y += STEP) ctx.lineTo(sampleWave(leadX, y / H, l, ts), y);
+    ctx.globalAlpha = envAlpha * l.foamAlpha * 0.11; ctx.strokeStyle = "rgba(200,246,255,1)"; ctx.lineWidth = 24; ctx.stroke();
+    ctx.globalAlpha = envAlpha * l.foamAlpha * 0.26; ctx.strokeStyle = "rgba(228,252,255,1)"; ctx.lineWidth = 9;  ctx.stroke();
+    ctx.globalAlpha = envAlpha * l.foamAlpha * 0.92; ctx.strokeStyle = "rgba(255,255,255,1)"; ctx.lineWidth = 2.2; ctx.stroke();
     ctx.restore();
 
-    // Bubbles — batched single fill, no shadow
-    ctx.save();
-    ctx.globalAlpha = envAlpha * 0.7;
-    ctx.fillStyle = "rgba(255,255,255,0.82)";
-    ctx.beginPath();
+    ctx.save(); ctx.globalAlpha = envAlpha * 0.68; ctx.fillStyle = "rgba(255,255,255,0.82)"; ctx.beginPath();
     for (let i = 0; i < l.bubbles; i++) {
-      const t = (i + 0.5) / l.bubbles;
-      const seed = i * 2.718 + l.phase;
-      const bx = sampleWave(leadX, t, l, ts) + Math.sin(seed + ts * 0.6) * 28;
-      const by = H * t + Math.cos(seed + ts * 0.5) * 12;
-      const r = 1.2 + Math.abs(Math.sin(seed * 0.8 + ts * 0.3)) * 3.5;
-      ctx.moveTo(bx + r, by);
-      ctx.arc(bx, by, r, 0, Math.PI * 2);
+      const t = (i + 0.5) / l.bubbles; const seed = i * 2.718 + l.phase;
+      const bx = sampleWave(leadX, t, l, ts) + Math.sin(seed + ts * 0.55) * 26;
+      const by = H * t + Math.cos(seed + ts * 0.47) * 12;
+      const r = 1.0 + Math.abs(Math.sin(seed * 0.82 + ts * 0.26)) * 3.4;
+      ctx.moveTo(bx + r, by); ctx.arc(bx, by, r, 0, Math.PI * 2);
     }
-    ctx.fill();
-    ctx.restore();
+    ctx.fill(); ctx.restore();
   };
 
   const frame = (now: number) => {
-    // 45fps throttle
-    if (now - lastFrame < FRAME_MS) { requestAnimationFrame(frame); return; }
-    lastFrame = now;
-
-    const elapsed = now - start;
-    const raw = Math.min(elapsed / DURATION, 1);
+    const raw = Math.min((now - start) / DURATION, 1);
     ctx.clearRect(0, 0, W, H);
     const prog = ease(raw);
     let envAlpha = 1;
-    if (raw < 0.06) envAlpha = raw / 0.06;
-    if (raw > 0.86) envAlpha = Math.max(0, 1 - (raw - 0.86) / 0.14);
-
-    LAYERS.forEach((l) => {
-      const span = 1.4 + Math.abs(l.offset);
-      const leadX = W * l.offset + W * span * Math.min(1, prog * l.speed);
-      drawLayer(l, leadX, envAlpha, now);
-    });
-
-    if (prog > 0.34 && !covered) { covered = true; onCover(); }
+    if (raw < 0.05) envAlpha = raw / 0.05;
+    if (raw > 0.88) envAlpha = Math.max(0, 1 - (raw - 0.88) / 0.12);
+    for (const l of LAYERS) {
+      const span = 1.35 + Math.abs(l.offset);
+      drawLayer(l, W * l.offset + W * span * Math.min(1, prog * l.speed), envAlpha, now);
+    }
+    if (prog > 0.32 && !covered) { covered = true; onCover(); }
     if (raw < 1) requestAnimationFrame(frame);
     else teardown(canvas);
   };
-
   requestAnimationFrame(frame);
 }
 
-/* ─── Dark Eclipse (dark-mode entry) ──────────────────────────────────────
-   Performance-tuned: 45fps, no corner wisps, 5 stars max, cached veil. */
+/* ── Storm / Dark Entry — Simpsons-style clouds + JTEC logo ─────────────
+   Clouds roll in from both sides, lightning flashes, JTEC glows through,
+   screen goes dark, dark mode is revealed as clouds part.               */
 function playDarkEclipse(onCover: () => void) {
   const setup = setupCanvas();
   if (!setup) return;
   const { canvas, ctx, W, H } = setup;
+  playStormSound();
 
   const cx = W / 2;
   const cy = H / 2;
-  const maxR = Math.hypot(cx, cy) * 1.18;
-
-  const DURATION = 1600;
-  const FRAME_MS = 1000 / 45;
+  const DURATION = 2200;
+  const COVER_AT = 0.54; // when to flip theme
   const start = performance.now();
-  let lastFrame = 0;
   let covered = false;
 
-  const CLOSE_END = 0.46;
-  const HOLD_END = 0.56;
+  /* Pre-render cloud sprites once — no gradient construction per frame */
+  type CloudSprite = { img: HTMLCanvasElement; w: number; h: number };
+  type Cloud = { sprite: CloudSprite; startX: number; startY: number; restX: number; restY: number; speed: number; alphaMax: number };
 
-  const easeInOut = (t: number) =>
-    t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  const easeOut = (t: number) => 1 - Math.pow(1 - t, 2.4);
+  const buildCloudSprite = (sw: number): CloudSprite => {
+    const sh = Math.ceil(sw * (0.55 + Math.random() * 0.25));
+    const pad = sw * 0.5;
+    const cw = Math.ceil(sw + pad * 2);
+    const ch = Math.ceil(sh + pad * 2);
+    const c = document.createElement("canvas");
+    c.width = cw; c.height = ch;
+    const cc = c.getContext("2d")!;
+    const blobCount = 5 + Math.floor(Math.random() * 4);
+    for (let b = 0; b < blobCount; b++) {
+      const bx = pad + Math.random() * sw;
+      const by = pad * 0.8 + Math.random() * sh;
+      const br = sw * (0.38 + Math.random() * 0.44);
+      const hue = 228 + Math.random() * 24;
+      const g = cc.createRadialGradient(bx, by, 0, bx, by, br);
+      g.addColorStop(0,   `hsla(${hue},55%,7%,0.92)`);
+      g.addColorStop(0.35,`hsla(${hue},50%,5%,0.72)`);
+      g.addColorStop(0.7, `hsla(${hue},45%,4%,0.38)`);
+      g.addColorStop(1,   `hsla(${hue},40%,3%,0)`);
+      cc.fillStyle = g;
+      cc.beginPath(); cc.arc(bx, by, br, 0, Math.PI * 2); cc.fill();
+    }
+    return { img: c, w: cw, h: ch };
+  };
 
-  // Pre-build static star positions (avoid recomputing per frame)
-  const STARS = Array.from({ length: 5 }, (_, i) => {
-    const seed = i * 2.718;
-    return {
-      x: cx + Math.cos(seed) * (Math.sin(seed * 1.3) * W * 0.16),
-      y: cy + Math.sin(seed * 1.7) * (Math.cos(seed * 0.9) * H * 0.16),
-    };
-  });
+  // 20 clouds: 10 from left, 10 from right — rest positions spread over screen
+  const clouds: Cloud[] = [];
+  for (let i = 0; i < 20; i++) {
+    const fromLeft = i < 10;
+    const col = i % 5;
+    const row = Math.floor((i % 10) / 5);
+    const sz = 200 + Math.random() * 220;
+    const sprite = buildCloudSprite(sz);
+    // Rest position: cover screen in a loose grid
+    const restX = W * (0.05 + col * 0.22) + (Math.random() - 0.5) * W * 0.08;
+    const restY = H * (0.1  + row * 0.42) + (Math.random() - 0.5) * H * 0.18;
+    clouds.push({
+      sprite,
+      startX: fromLeft ? -sprite.w * 0.5 - 60 : W + sprite.w * 0.5 + 60,
+      startY: restY + (Math.random() - 0.5) * H * 0.1,
+      restX, restY,
+      speed:    0.65 + Math.random() * 0.7,
+      alphaMax: 0.72 + Math.random() * 0.28,
+    });
+  }
+
+  // Lightning: two flashes, animated over ~80ms each
+  let flash = 0;
+  const flashTimes = [0.32, 0.46];
+  const flashFired = new Set<number>();
+
+  const easeInOut = (t: number) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  const easeOut   = (t: number) => 1 - Math.pow(1 - t, 2.5);
 
   const frame = (now: number) => {
-    if (now - lastFrame < FRAME_MS) { requestAnimationFrame(frame); return; }
-    lastFrame = now;
-
     const raw = Math.min((now - start) / DURATION, 1);
     ctx.clearRect(0, 0, W, H);
 
-    let radius: number;
-    let coverAlpha: number;
+    // ── Cloud progress ──
+    const cloudIn   = raw < COVER_AT  ? easeInOut(raw / COVER_AT) : 1;
+    const cloudOut  = raw > COVER_AT + 0.08 ? easeOut((raw - COVER_AT - 0.08) / (1 - COVER_AT - 0.08)) : 0;
+    const cloudAlphaEnv = cloudOut > 0 ? Math.max(0, 1 - cloudOut * 1.15) : 1;
 
-    if (raw < CLOSE_END) {
-      radius = maxR * (1 - easeInOut(raw / CLOSE_END));
-      coverAlpha = 1;
-    } else if (raw < HOLD_END) {
-      radius = 0;
-      coverAlpha = 1;
-      if (!covered) { covered = true; onCover(); }
-    } else {
-      const t = (raw - HOLD_END) / (1 - HOLD_END);
-      radius = maxR * easeOut(t);
-      coverAlpha = Math.max(0, 1 - t * 1.05);
+    for (const c of clouds) {
+      const t = Math.min(cloudIn * c.speed, 1);
+      const e = easeInOut(t);
+      const px = c.startX + (c.restX - c.startX) * e;
+      const py = c.startY + (c.restY - c.startY) * e;
+      const a   = Math.min(cloudIn * c.speed * 1.6, 1) * cloudAlphaEnv * c.alphaMax;
+      if (a < 0.01) continue;
+      ctx.globalAlpha = a;
+      ctx.drawImage(c.sprite.img, px - c.sprite.w / 2, py - c.sprite.h / 2);
+    }
+    ctx.globalAlpha = 1;
+
+    // ── Full dark fill when clouds dense enough ──
+    const darkness = Math.max(0, Math.min(1, (cloudIn - 0.72) / 0.28));
+    const darkFade = darkness * cloudAlphaEnv;
+    if (darkFade > 0) {
+      ctx.globalAlpha = darkFade;
+      ctx.fillStyle = "rgb(3,1,14)";
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
     }
 
-    // Layer 1: dark veil (solid rect — no gradient, cheaper)
-    ctx.save();
-    ctx.globalAlpha = coverAlpha;
-    ctx.fillStyle = "rgb(6,3,22)";
-    ctx.fillRect(0, 0, W, H);
+    // ── Theme switch ──
+    if (cloudIn > 0.88 && !covered) { covered = true; onCover(); }
 
-    // Iris cutout via destination-out
-    if (radius > 1) {
-      ctx.globalCompositeOperation = "destination-out";
-      const hole = ctx.createRadialGradient(cx, cy, radius * 0.5, cx, cy, radius * 1.05);
-      hole.addColorStop(0, "rgba(0,0,0,1)");
-      hole.addColorStop(0.82, "rgba(0,0,0,1)");
-      hole.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = hole;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius * 1.08, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-
-    // Layer 2: rim glow (single gradient, only during iris phase)
-    if (radius > 8 && radius < maxR * 0.96) {
-      const rimAlpha = coverAlpha * Math.sin((raw / HOLD_END) * Math.PI) * 0.65;
-      if (rimAlpha > 0.01) {
-        ctx.save();
-        ctx.globalAlpha = rimAlpha;
-        const rim = ctx.createRadialGradient(cx, cy, radius * 0.8, cx, cy, radius * 1.35);
-        rim.addColorStop(0, "rgba(70,22,165,0)");
-        rim.addColorStop(0.4, "rgba(70,22,165,0.5)");
-        rim.addColorStop(1, "rgba(15,5,55,0)");
-        ctx.fillStyle = rim;
-        ctx.fillRect(0, 0, W, H);
-        ctx.restore();
+    // ── Lightning flashes ──
+    for (const ft of flashTimes) {
+      if (raw >= ft && !flashFired.has(ft)) {
+        flashFired.add(ft);
+        flash = 1;
       }
     }
+    if (flash > 0.01) {
+      ctx.globalAlpha = flash * 0.5;
+      ctx.fillStyle = "rgba(210,220,255,1)";
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+      flash *= 0.68; // fast natural decay
+    }
 
-    // Layer 3: star bloom (5 stars, only at peak — batched fill)
-    if (raw > CLOSE_END * 0.8 && raw < HOLD_END + 0.12) {
-      const bloomT = raw < HOLD_END
-        ? (raw - CLOSE_END * 0.8) / (HOLD_END - CLOSE_END * 0.8)
-        : 1 - (raw - HOLD_END) / 0.12;
-      const bAlpha = Math.max(0, bloomT) * 0.55;
-      if (bAlpha > 0.01) {
-        ctx.save();
-        ctx.globalAlpha = bAlpha;
-        ctx.globalCompositeOperation = "screen";
-        // Batch all stars into one gradient fill each (5 max)
-        for (const s of STARS) {
-          const r = 8;
-          const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r);
-          sg.addColorStop(0, "rgba(200,180,255,0.95)");
-          sg.addColorStop(1, "rgba(100,70,220,0)");
-          ctx.fillStyle = sg;
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.restore();
-      }
+    // ── JTEC logo materialises through storm clouds ──
+    // Appears as clouds build, peaks at coverage, then fades to dark
+    const logoRaw = raw > 0.14 && raw < COVER_AT + 0.16
+      ? raw < 0.26 ? (raw - 0.14) / 0.12
+      : raw > COVER_AT ? Math.max(0, 1 - (raw - COVER_AT) / 0.16)
+      : 1
+      : 0;
+
+    if (logoRaw > 0.01) {
+      ctx.save();
+
+      // Halo glow behind logo (screen blend over clouds)
+      ctx.globalCompositeOperation = "screen";
+      ctx.globalAlpha = logoRaw * 0.65;
+      const haloR = Math.min(W, H) * 0.22;
+      const hg = ctx.createRadialGradient(cx, cy, 0, cx, cy, haloR);
+      hg.addColorStop(0,   "rgba(110,90,220,0.55)");
+      hg.addColorStop(0.5, "rgba(70,50,180,0.22)");
+      hg.addColorStop(1,   "rgba(30,15,90,0)");
+      ctx.fillStyle = hg;
+      ctx.beginPath(); ctx.arc(cx, cy, haloR, 0, Math.PI * 2); ctx.fill();
+
+      // JTEC text — three passes for glow-without-blur
+      ctx.globalCompositeOperation = "source-over";
+      const fontSize = Math.min(W * 0.135, 130);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      const textGrad = ctx.createLinearGradient(cx - fontSize * 1.6, cy, cx + fontSize * 1.6, cy);
+      textGrad.addColorStop(0,    "rgba(129,140,248,1)");
+      textGrad.addColorStop(0.45, "rgba(167,139,250,1)");
+      textGrad.addColorStop(1,    "rgba(232,121,249,1)");
+
+      // Outer glow pass
+      ctx.globalAlpha = logoRaw * 0.18;
+      ctx.font = `900 ${fontSize * 1.06}px system-ui,-apple-system,sans-serif`;
+      ctx.fillStyle = "rgba(180,160,255,1)";
+      ctx.fillText("JTEC", cx, cy);
+
+      // Mid glow
+      ctx.globalAlpha = logoRaw * 0.38;
+      ctx.font = `900 ${fontSize * 1.02}px system-ui,-apple-system,sans-serif`;
+      ctx.fillStyle = "rgba(200,185,255,1)";
+      ctx.fillText("JTEC", cx, cy);
+
+      // Sharp core
+      ctx.globalAlpha = logoRaw * 0.92;
+      ctx.font = `900 ${fontSize}px system-ui,-apple-system,sans-serif`;
+      ctx.fillStyle = textGrad;
+      ctx.fillText("JTEC", cx, cy);
+
+      // Tagline under logo
+      ctx.globalAlpha = logoRaw * 0.55;
+      ctx.font = `400 ${Math.max(fontSize * 0.18, 14)}px system-ui,-apple-system,sans-serif`;
+      ctx.fillStyle = "rgba(180,170,230,1)";
+      ctx.fillText("Tecnologia & Inovação", cx, cy + fontSize * 0.72);
+
+      ctx.restore();
     }
 
     if (raw < 1) requestAnimationFrame(frame);
@@ -312,11 +432,10 @@ function playDarkEclipse(onCover: () => void) {
   requestAnimationFrame(frame);
 }
 
-/* ─── Component ─────────────────────────────────────────────────────────── */
+/* ── Component ──────────────────────────────────────────────────────────── */
 export default function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
@@ -326,7 +445,7 @@ export default function ThemeToggle() {
   const isDark = resolvedTheme === "dark";
 
   const toggle = () => {
-    if (document.getElementById(TRANSITION_ID)) return; // already running
+    if (document.getElementById(TRANSITION_ID)) return;
     if (isDark) {
       playWaterFlood(() => setTheme("light"));
     } else {
