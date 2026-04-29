@@ -70,30 +70,30 @@ export default function Features() {
 
             {/* LEFT — Text + bio */}
             <div className="order-2 md:order-1" data-aos="fade-right">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-400 backdrop-blur-xl">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-500 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400">
                 <span className="h-1 w-1 rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-400" />
                 Quem somos
               </div>
 
               <h2 className="mb-6 font-nacelle text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
-                <span className="text-white/90">A JTEC é </span>
-                <span className="bg-gradient-to-br from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
+                <span className="text-gray-900 dark:text-white/90">A JTEC é </span>
+                <span className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-indigo-300 dark:via-violet-300 dark:to-fuchsia-300 bg-clip-text text-transparent">
                   tecnologia viva.
                 </span>
               </h2>
 
-              <div className="space-y-5 text-lg leading-relaxed text-gray-400">
+              <div className="space-y-5 text-lg leading-relaxed text-gray-500 dark:text-gray-400">
                 <p>
-                  A <span className="font-semibold text-white">JTEC</span> é uma empresa de tecnologia
+                  A <span className="font-semibold text-gray-900 dark:text-white">JTEC</span> é uma empresa de tecnologia
                   nascida em Belo Horizonte/MG, especializada em desenvolvimento fullstack,
                   inteligência artificial e infraestrutura de ponta.
                 </p>
                 <p>
                   Nossa expertise vai do front-end moderno ao servidor de IA dedicado — com deploy de LLMs,
                   infraestrutura escalável com Nginx e integração de modelos proprietários que dão à empresa
-                  <span className="text-white"> fluência nativa em qualquer idioma</span>.
+                  <span className="text-gray-900 dark:text-white"> fluência nativa em qualquer idioma</span>.
                 </p>
-                <p className="text-gray-500">
+                <p className="text-gray-400 dark:text-gray-500">
                   Atendemos clientes do mundo todo com a precisão, performance e cuidado que produtos sérios exigem —
                   sem barreiras de linguagem, sem fuso horário limitante.
                 </p>
@@ -101,15 +101,15 @@ export default function Features() {
 
               {/* Global reach tags */}
               <div className="mt-8">
-                <div className="mb-3 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.3em] text-gray-500">
-                  <span className="h-px w-6 bg-white/30" />
+                <div className="mb-3 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500">
+                  <span className="h-px w-6 bg-gray-300 dark:bg-white/30" />
                   Atendimento multilíngue · via IA
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {globalReach.map((l) => (
                     <span
                       key={l.label}
-                      className="glass-light inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] text-gray-300"
+                      className="glass-light inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] text-gray-600 dark:text-gray-300"
                     >
                       <span>{l.flag}</span>
                       {l.label}
@@ -124,7 +124,7 @@ export default function Features() {
                   ].map((tag) => (
                     <span
                       key={tag.label}
-                      className="glass-light inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs text-gray-300"
+                      className="glass-light inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs text-gray-600 dark:text-gray-300"
                     >
                       <span>{tag.icon}</span>
                       {tag.label}
@@ -154,8 +154,8 @@ export default function Features() {
                         </div>
                       </div>
                       <div>
-                        <div className="font-nacelle text-lg font-semibold text-white">JTEC — Capacidades</div>
-                        <div className="text-sm text-gray-400">
+                        <div className="font-nacelle text-lg font-semibold text-gray-900 dark:text-white">JTEC — Capacidades</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           Desenvolvida pelos fundadores da JTEC
                         </div>
                       </div>
@@ -168,8 +168,8 @@ export default function Features() {
                           key={i}
                           className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all hover:border-white/15 hover:bg-white/[0.06]"
                         >
-                          <div className="mb-1 font-nacelle text-base font-semibold text-white">{c.k}</div>
-                          <div className="text-[11px] leading-relaxed text-gray-500">{c.v}</div>
+                          <div className="mb-1 font-nacelle text-base font-semibold text-gray-900 dark:text-white">{c.k}</div>
+                          <div className="text-[11px] leading-relaxed text-gray-400 dark:text-gray-500">{c.v}</div>
                           <div className="pointer-events-none absolute right-0 top-0 h-16 w-16 rounded-full bg-gradient-to-br from-indigo-500/20 to-transparent opacity-0 blur-xl transition-opacity group-hover:opacity-100" />
                         </div>
                       ))}
@@ -179,16 +179,16 @@ export default function Features() {
                     <div className="mt-6 space-y-3">
                       {[
                         { label: "Fullstack Web", value: 97 },
-                        { label: "IA &amp; LLMs", value: 94 },
+                        { label: "IA & LLMs", value: 94 },
                         { label: "Multi-idioma (IA)", value: 100 },
-                        { label: "DevOps &amp; Infra", value: 90 },
+                        { label: "DevOps & Infra", value: 90 },
                       ].map((skill) => (
                         <div key={skill.label}>
                           <div className="mb-1 flex items-center justify-between text-xs">
-                            <span className="text-gray-400">{skill.label}</span>
-                            <span className="font-mono text-gray-500">{skill.value}%</span>
+                            <span className="text-gray-500 dark:text-gray-400">{skill.label}</span>
+                            <span className="font-mono text-gray-400 dark:text-gray-500">{skill.value}%</span>
                           </div>
-                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-white/5">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400"
                               style={{
@@ -215,7 +215,7 @@ export default function Features() {
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                     </span>
-                    <span className="text-xs font-medium text-white">Aceitando novos projetos</span>
+                    <span className="text-xs font-medium text-gray-900 dark:text-white">Aceitando novos projetos</span>
                   </div>
                 </div>
               </div>
@@ -233,7 +233,7 @@ export default function Features() {
           {/* Header */}
           <div className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
             <div
-              className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-400 backdrop-blur-xl"
+              className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-500 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400"
               data-aos="fade-up"
             >
               <span className="h-1 w-1 rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-400" />
@@ -245,14 +245,14 @@ export default function Features() {
               data-aos="fade-up"
               data-aos-delay={100}
             >
-              <span className="text-white/90">Ferramentas </span>
-              <span className="bg-gradient-to-br from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
+              <span className="text-gray-900 dark:text-white/90">Ferramentas </span>
+              <span className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-indigo-300 dark:via-violet-300 dark:to-fuchsia-300 bg-clip-text text-transparent">
                 que dominamos.
               </span>
             </h2>
 
             <p
-              className="mx-auto max-w-2xl text-lg text-gray-400"
+              className="mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400"
               data-aos="fade-up"
               data-aos-delay={200}
             >
@@ -286,7 +286,7 @@ export default function Features() {
                     {group.items.map((tech) => (
                       <span
                         key={tech}
-                        className={`tech-pill inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-gray-200 backdrop-blur-xl`}
+                        className={`tech-pill inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-700 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-200`}
                       >
                         {tech}
                       </span>
@@ -302,7 +302,7 @@ export default function Features() {
             className="mt-16 overflow-hidden rounded-3xl glass-heavy"
             data-aos="fade-up"
           >
-            <div className="grid grid-cols-1 divide-white/5 md:grid-cols-4 md:divide-x">
+            <div className="grid grid-cols-1 divide-gray-100 dark:divide-white/5 md:grid-cols-4 md:divide-x">
               {[
                 { k: "30+", v: "Idiomas atendidos via IA" },
                 { k: "24/7", v: "Suporte e infra monitorada" },
@@ -310,7 +310,7 @@ export default function Features() {
                 { k: "< 30s", v: "Deploy automatizado" },
               ].map((m, i) => (
                 <div key={i} className="p-6 text-center">
-                  <div className="mb-1 font-nacelle text-3xl font-semibold bg-gradient-to-br from-white via-indigo-200 to-fuchsia-200 bg-clip-text text-transparent">
+                  <div className="mb-1 font-nacelle text-3xl font-semibold bg-gradient-to-br from-gray-900 via-indigo-700 to-fuchsia-700 dark:from-white dark:via-indigo-200 dark:to-fuchsia-200 bg-clip-text text-transparent">
                     {m.k}
                   </div>
                   <div className="text-xs leading-relaxed text-gray-500">{m.v}</div>

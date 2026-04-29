@@ -23,13 +23,13 @@ export default function HeroHome() {
 
           {/* Live badge */}
           <div className="flex justify-center mb-8" data-aos="fade-down">
-            <div className="group relative inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm text-gray-300 backdrop-blur-xl transition-all hover:border-white/20 hover:bg-white/[0.06]">
+            <div className="group relative inline-flex items-center gap-2.5 rounded-full border border-gray-200 bg-white/70 px-4 py-1.5 text-sm text-gray-600 backdrop-blur-xl transition-all hover:border-gray-300 hover:bg-white/90 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300 dark:hover:border-white/20 dark:hover:bg-white/[0.06]">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
               </span>
-              <span className="text-gray-300">Belo Horizonte, MG</span>
-              <span className="text-white/20">·</span>
+              <span className="text-gray-600 dark:text-gray-300">Belo Horizonte, MG</span>
+              <span className="text-gray-300 dark:text-white/20">·</span>
               <span className="bg-gradient-to-r from-indigo-300 to-fuchsia-300 bg-clip-text font-medium text-transparent">
                 Desde Dez 2023
               </span>
@@ -42,28 +42,26 @@ export default function HeroHome() {
               className="mb-6 font-nacelle text-[2.75rem] font-semibold leading-[1.05] tracking-tight md:text-7xl lg:text-[5.5rem]"
               data-aos="fade-up"
             >
-              <span className="block text-gradient animate-[gradient_8s_linear_infinite] bg-[length:200%_auto]" style={{
-                backgroundImage: "linear-gradient(110deg, #fff 0%, #e0e7ff 20%, #c7d2fe 40%, #a78bfa 60%, #f0abfc 80%, #fff 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}>
+              <span className="block text-gradient dark:animate-[gradient_8s_linear_infinite] dark:bg-[length:200%_auto]" style={{
+                backgroundImage: "linear-gradient(110deg, #1a1040 0%, #4f46e5 20%, #7c3aed 40%, #a78bfa 60%, #c026d3 80%, #1a1040 100%)",
+              }}
+              data-dark-style="backgroundImage: linear-gradient(110deg, #fff 0%, #e0e7ff 20%, #c7d2fe 40%, #a78bfa 60%, #f0abfc 80%, #fff 100%)">
                 Tecnologia
               </span>
-              <span className="block text-white/80">
+              <span className="block text-gray-800 dark:text-white/80">
                 que se <span className="relative inline-block">
-                  <span className="relative z-10 bg-gradient-to-br from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">sente</span>
-                  <span className="absolute -inset-x-2 -inset-y-0 -z-0 block rounded-lg bg-gradient-to-br from-indigo-500/30 via-violet-500/30 to-fuchsia-500/30 blur-xl"></span>
+                  <span className="relative z-10 bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-indigo-300 dark:via-violet-300 dark:to-fuchsia-300 bg-clip-text text-transparent">sente</span>
+                  <span className="absolute -inset-x-2 -inset-y-0 -z-0 block rounded-lg bg-gradient-to-br from-indigo-500/20 via-violet-500/20 to-fuchsia-500/20 dark:from-indigo-500/30 dark:via-violet-500/30 dark:to-fuchsia-500/30 blur-xl"></span>
                 </span>.
               </span>
             </h1>
 
             <p
-              className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-gray-400 md:text-xl"
+              className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-gray-500 dark:text-gray-400 md:text-xl"
               data-aos="fade-up"
               data-aos-delay={150}
             >
-              A <span className="font-semibold text-white">JTEC</span> entrega soluções completas em desenvolvimento fullstack,
+              A <span className="font-semibold text-gray-900 dark:text-white">JTEC</span> entrega soluções completas em desenvolvimento fullstack,
               inteligência artificial e infraestrutura — com design fresco, performance extrema
               e a precisão que produtos sérios exigem.
             </p>
@@ -86,11 +84,11 @@ export default function HeroHome() {
               </a>
               <Link
                 href="/loja"
-                className="group relative inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.02] px-7 py-3 font-medium text-white backdrop-blur-2xl transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-gradient-to-b hover:from-white/[0.12] hover:to-white/[0.04] shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.1)] sm:w-auto"
+                className="group relative inline-flex w-full items-center justify-center gap-2 rounded-full border border-gray-200 bg-white/80 px-7 py-3 font-medium text-gray-800 backdrop-blur-2xl transition-all hover:scale-[1.02] hover:border-indigo-200 shadow-[0_4px_20px_-4px_rgba(99,102,241,0.1)] dark:border-white/12 dark:bg-gradient-to-b dark:from-white/[0.08] dark:to-white/[0.02] dark:text-white dark:hover:border-white/20 dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.1)] sm:w-auto"
               >
-                <span className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <span className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full bg-gradient-to-r from-transparent via-indigo-300/40 dark:via-white/40 to-transparent" />
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)]">
-                  <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="h-3 w-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="9" cy="20" r="1.5" />
                     <circle cx="18" cy="20" r="1.5" />
                     <path d="M3 4h2l2.5 12h11L21 7H6" />
@@ -103,11 +101,11 @@ export default function HeroHome() {
               </Link>
               <Link
                 href="/portfolio"
-                className="group relative inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.02] px-7 py-3 font-medium text-white backdrop-blur-2xl transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-gradient-to-b hover:from-white/[0.12] hover:to-white/[0.04] shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.1)] sm:w-auto"
+                className="group relative inline-flex w-full items-center justify-center gap-2 rounded-full border border-gray-200 bg-white/80 px-7 py-3 font-medium text-gray-800 backdrop-blur-2xl transition-all hover:scale-[1.02] hover:border-indigo-200 shadow-[0_4px_20px_-4px_rgba(99,102,241,0.1)] dark:border-white/12 dark:bg-gradient-to-b dark:from-white/[0.08] dark:to-white/[0.02] dark:text-white dark:hover:border-white/20 dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.1)] sm:w-auto"
               >
-                <span className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <span className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full bg-gradient-to-r from-transparent via-indigo-300/40 dark:via-white/40 to-transparent" />
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3)]">
-                  <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="h-3 w-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="7" width="20" height="14" rx="2" />
                     <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
                   </svg>
@@ -119,7 +117,7 @@ export default function HeroHome() {
               </Link>
               <a
                 href="#servicos"
-                className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-full border border-white/10 bg-white/[0.03] px-7 py-3 font-medium text-gray-200 backdrop-blur-xl transition-all hover:border-white/20 hover:bg-white/[0.06] sm:w-auto"
+                className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-full border border-gray-200 bg-gray-50 px-7 py-3 font-medium text-gray-600 backdrop-blur-xl transition-all hover:border-gray-300 hover:bg-gray-100 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-200 dark:hover:border-white/20 dark:hover:bg-white/[0.06] sm:w-auto"
               >
                 <span>Ver serviços</span>
                 <svg className="h-4 w-4 opacity-60 transition-transform group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -147,7 +145,7 @@ export default function HeroHome() {
                   </div>
                   <div>
                     <div className="text-[11px] uppercase tracking-wider text-gray-500">Deploy</div>
-                    <div className="font-semibold text-white">&lt; 30s</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">&lt; 30s</div>
                   </div>
                 </div>
               </div>
@@ -164,7 +162,7 @@ export default function HeroHome() {
                   </div>
                   <div>
                     <div className="text-[11px] uppercase tracking-wider text-gray-500">LLM</div>
-                    <div className="font-semibold text-white">Ollama + Llama.cpp</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">Ollama + Llama.cpp</div>
                   </div>
                 </div>
               </div>
@@ -181,7 +179,7 @@ export default function HeroHome() {
                   </div>
                   <div>
                     <div className="text-[11px] uppercase tracking-wider text-gray-500">Uptime</div>
-                    <div className="font-semibold text-white">99.9%</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">99.9%</div>
                   </div>
                 </div>
               </div>
@@ -293,11 +291,11 @@ export default function HeroHome() {
                 className="glass rounded-2xl p-6 text-center transition-all hover:scale-[1.02] hover:bg-white/[0.05]"
               >
                 <div className="mb-2 font-nacelle text-4xl font-semibold">
-                  <span className="bg-gradient-to-br from-white via-indigo-200 to-fuchsia-200 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-br from-gray-900 via-indigo-700 to-fuchsia-700 dark:from-white dark:via-indigo-200 dark:to-fuchsia-200 bg-clip-text text-transparent">
                     {stat.value}
                   </span>
                 </div>
-                <div className="text-sm text-gray-400">{stat.label}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -308,14 +306,14 @@ export default function HeroHome() {
             data-aos="fade-up"
             data-aos-delay={600}
           >
-            <div className="text-center mb-6 text-xs uppercase tracking-[0.2em] text-gray-500">
+            <div className="text-center mb-6 text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
               Stack que dominamos
             </div>
             <div className="flex animate-[scroll-x_30s_linear_infinite] gap-4 w-max">
               {[...techLogos, ...techLogos].map((tech, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-gray-300 backdrop-blur-xl whitespace-nowrap"
+                  className="flex items-center gap-2 rounded-full border border-gray-200 bg-white/70 px-5 py-2.5 text-sm font-medium text-gray-600 backdrop-blur-xl whitespace-nowrap dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300"
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-400" />
                   {tech}

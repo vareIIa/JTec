@@ -72,7 +72,7 @@ export default function Workflows() {
         {/* Section header */}
         <div className="mx-auto mb-16 max-w-3xl text-center md:mb-24">
           <div
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-400 backdrop-blur-xl"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-500 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400"
             data-aos="fade-up"
           >
             <span className="h-1 w-1 rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-400" />
@@ -84,16 +84,16 @@ export default function Workflows() {
             data-aos="fade-up"
             data-aos-delay={100}
           >
-            <span className="text-white/90">Soluções </span>
-            <span className="bg-gradient-to-br from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
+            <span className="text-gray-900 dark:text-white/90">Soluções </span>
+            <span className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-indigo-300 dark:via-violet-300 dark:to-fuchsia-300 bg-clip-text text-transparent">
               que escalam.
             </span>
             <br />
-            <span className="text-white/60">Design que encanta.</span>
+            <span className="text-gray-500 dark:text-white/60">Design que encanta.</span>
           </h2>
 
           <p
-            className="mx-auto max-w-2xl text-lg text-gray-400"
+            className="mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400"
             data-aos="fade-up"
             data-aos-delay={200}
           >
@@ -129,24 +129,24 @@ export default function Workflows() {
                     </div>
 
                     {/* Tag */}
-                    <div className="mb-3 inline-flex w-fit items-center rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 text-[11px] uppercase tracking-wider text-gray-400">
+                    <div className="mb-3 inline-flex w-fit items-center rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-[11px] uppercase tracking-wider text-gray-500 dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-400">
                       {s.tag}
                     </div>
 
                     {/* Title */}
-                    <h3 className="mb-3 font-nacelle text-2xl font-semibold text-white">
+                    <h3 className="mb-3 font-nacelle text-2xl font-semibold text-gray-900 dark:text-white">
                       {s.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="mb-6 text-sm leading-relaxed text-gray-400">
+                    <p className="mb-6 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
                       {s.description}
                     </p>
 
                     {/* Bullet list */}
                     <ul className="mt-auto space-y-2.5">
                       {s.items.map((item) => (
-                        <li key={item} className="flex items-start gap-2.5 text-sm text-gray-300">
+                        <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300">
                           <span className={`mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gradient-to-br ${s.gradient}`} />
                           {item}
                         </li>
@@ -154,7 +154,7 @@ export default function Workflows() {
                     </ul>
 
                     {/* Bottom action */}
-                    <div className="mt-6 flex items-center gap-2 border-t border-white/5 pt-5 text-xs text-gray-500 transition-colors group-hover:text-indigo-300">
+                    <div className="mt-6 flex items-center gap-2 border-t border-gray-100 dark:border-white/5 pt-5 text-xs text-gray-400 dark:text-gray-500 transition-colors group-hover:text-indigo-500 dark:group-hover:text-indigo-300">
                       <span>Saiba mais</span>
                       <svg className="h-3 w-3 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M5 12h14M13 5l7 7-7 7" />

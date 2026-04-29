@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Additional styles */
 @import './additional-styles/utility-patterns.css' layer(components);
@@ -128,6 +129,192 @@
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4.
 */
+/* ── Light mode: bokeh float keyframes ── */
+@keyframes bokeh-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(40px, -55px) scale(1.08); }
+  50% { transform: translate(80px, 10px) scale(0.96); }
+  75% { transform: translate(20px, 50px) scale(1.04); }
+}
+@keyframes bokeh-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1.05); }
+  30% { transform: translate(-60px, -30px) scale(0.92); }
+  60% { transform: translate(30px, 60px) scale(1.12); }
+  80% { transform: translate(-20px, -20px) scale(0.98); }
+}
+@keyframes bokeh-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(50px, 40px) scale(1.1); }
+  50% { transform: translate(-30px, -60px) scale(0.95); }
+  80% { transform: translate(60px, -20px) scale(1.06); }
+}
+@keyframes bokeh-drift-4 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  33% { transform: translate(-50px, 30px) scale(1.15); opacity: 0.9; }
+  66% { transform: translate(40px, -40px) scale(0.9); opacity: 0.5; }
+}
+@keyframes bokeh-drift-5 {
+  0%, 100% { transform: translate(0, 0) scale(1.02); }
+  40% { transform: translate(-70px, -50px) scale(0.88); }
+  70% { transform: translate(50px, 30px) scale(1.14); }
+}
+@keyframes ray-spin {
+  from { transform: translate(-50%, -40%) rotate(0deg); }
+  to   { transform: translate(-50%, -40%) rotate(360deg); }
+}
+@keyframes light-flash {
+  0%   { opacity: 0; transform: scale(0.2); }
+  18%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2); }
+}
+/* ─── WATER FLOOD TRANSITION (light mode entry) ─── */
+/* Front wave — main water sheet sweeps left→right across the screen */
+@keyframes water-flood-front {
+  0%   { transform: translateX(-115%) skewX(-14deg); opacity: 0; filter: blur(2px); }
+  10%  { opacity: 1; }
+  55%  { transform: translateX(-10%) skewX(-6deg); opacity: 1; filter: blur(0); }
+  85%  { transform: translateX(40%) skewX(-2deg); opacity: 0.9; }
+  100% { transform: translateX(115%) skewX(0deg); opacity: 0; filter: blur(2px); }
+}
+/* Back wave — slower trailing layer, deeper turquoise */
+@keyframes water-flood-back {
+  0%   { transform: translateX(-130%) skewX(-18deg) scaleY(1.05); opacity: 0; }
+  20%  { opacity: 0.85; }
+  60%  { transform: translateX(-22%) skewX(-8deg) scaleY(1); opacity: 0.92; }
+  100% { transform: translateX(120%) skewX(2deg) scaleY(0.95); opacity: 0; }
+}
+/* Foam crest — thin white leading edge, rides the wave */
+@keyframes water-flood-foam {
+  0%   { transform: translateX(-110%) skewX(-14deg); opacity: 0; }
+  18%  { opacity: 1; }
+  60%  { transform: translateX(0%) skewX(-4deg); opacity: 0.95; }
+  100% { transform: translateX(120%) skewX(2deg); opacity: 0; }
+}
+/* Ripple ring — radial pulse from cursor side, suggests impact */
+@keyframes water-flood-ripple {
+  0%   { opacity: 0; transform: scale(0.4); }
+  20%  { opacity: 0.6; }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+/* Underwater currents — slow lateral sway + gentle vertical drift,
+   stronger rotation than buoys, multiple harmonics for organic feel */
+@keyframes underwater-drift-1 {
+  0%   { transform: translate3d(0, 0, 0) rotate(-1.2deg); }
+  25%  { transform: translate3d(4px, -6px, 0) rotate(0.6deg); }
+  50%  { transform: translate3d(7px, -3px, 0) rotate(1.8deg); }
+  75%  { transform: translate3d(3px, 4px, 0) rotate(0.4deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-1.2deg); }
+}
+@keyframes underwater-drift-2 {
+  0%   { transform: translate3d(0, -3px, 0) rotate(1.4deg); }
+  30%  { transform: translate3d(-5px, -8px, 0) rotate(-0.7deg); }
+  60%  { transform: translate3d(-7px, 2px, 0) rotate(-1.6deg); }
+  85%  { transform: translate3d(-2px, 5px, 0) rotate(0.5deg); }
+  100% { transform: translate3d(0, -3px, 0) rotate(1.4deg); }
+}
+@keyframes underwater-drift-3 {
+  0%   { transform: translate3d(0, 0, 0) rotate(0.8deg); }
+  20%  { transform: translate3d(6px, -4px, 0) rotate(-1.3deg); }
+  45%  { transform: translate3d(2px, -9px, 0) rotate(1.5deg); }
+  70%  { transform: translate3d(-4px, -2px, 0) rotate(-0.6deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0.8deg); }
+}
+@keyframes underwater-drift-4 {
+  0%   { transform: translate3d(0, -2px, 0) rotate(-0.9deg); }
+  35%  { transform: translate3d(-6px, -7px, 0) rotate(1.7deg); }
+  65%  { transform: translate3d(5px, -3px, 0) rotate(-1.1deg); }
+  100% { transform: translate3d(0, -2px, 0) rotate(-0.9deg); }
+}
+@keyframes underwater-drift-5 {
+  0%   { transform: translate3d(0, 0, 0) rotate(1.5deg); }
+  25%  { transform: translate3d(3px, -5px, 0) rotate(-0.4deg); }
+  55%  { transform: translate3d(-3px, -10px, 0) rotate(-1.4deg); }
+  80%  { transform: translate3d(-6px, -2px, 0) rotate(0.7deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(1.5deg); }
+}
+/* Bubble particles drifting upward in the intro background */
+@keyframes bubble-rise {
+  0%   { transform: translate3d(0, 0, 0); opacity: 0.65; }
+  50%  { transform: translate3d(8px, -22px, 0); opacity: 0.85; }
+  100% { transform: translate3d(-4px, -42px, 0); opacity: 0; }
+}
+/* Legacy buoy aliases — point to gentler underwater currents */
+@keyframes buoy-float-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.2deg); }
+  50%      { transform: translate3d(4px, -7px, 0) rotate(1.4deg); }
+}
+@keyframes buoy-float-2 {
+  0%, 100% { transform: translate3d(0, -2px, 0) rotate(1.2deg); }
+  50%      { transform: translate3d(-3px, -12px, 0) rotate(-1.8deg); }
+}
+@keyframes buoy-float-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0.8deg); }
+  33%      { transform: translate3d(3px, -8px, 0) rotate(-1.5deg); }
+  66%      { transform: translate3d(-2px, -14px, 0) rotate(1.3deg); }
+}
+@keyframes buoy-float-4 {
+  0%, 100% { transform: translate3d(0, -4px, 0) rotate(-1deg); }
+  40%      { transform: translate3d(-4px, -12px, 0) rotate(2deg); }
+  70%      { transform: translate3d(3px, -6px, 0) rotate(-0.8deg); }
+}
+@keyframes buoy-float-5 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1.5deg); }
+  50%      { transform: translate3d(-2px, -16px, 0) rotate(-1.2deg); }
+}
+/* Legacy aliases — kept so existing classes still work */
+@keyframes light-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.2deg); }
+  50%      { transform: translate3d(2px, -10px, 0) rotate(1.4deg); }
+}
+@keyframes light-float-deep {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0.8deg); }
+  33%      { transform: translate3d(3px, -8px, 0) rotate(-1.5deg); }
+  66%      { transform: translate3d(-3px, -14px, 0) rotate(1.6deg); }
+}
+@keyframes sun-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%       { opacity: 0.75; transform: scale(1.06); }
+}
+@keyframes mote-rise {
+  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-80px) translateX(var(--drift, 0px)) scale(0.6); opacity: 0; }
+}
+/* ─── DARK-MODE ECLIPSE TRANSITION ─── */
+/* Iris closure — black void closes radially over the screen, opens to dark mode */
+@keyframes dark-iris-close {
+  0%   { opacity: 0; clip-path: circle(150% at 50% 50%); filter: blur(0); }
+  10%  { opacity: 1; }
+  45%  { clip-path: circle(70% at 50% 50%); opacity: 1; filter: blur(0); }
+  62%  { clip-path: circle(0% at 50% 50%); opacity: 1; }
+  78%  { clip-path: circle(80% at 50% 50%); opacity: 0.85; filter: blur(8px); }
+  100% { clip-path: circle(150% at 50% 50%); opacity: 0; filter: blur(0); }
+}
+/* Smoke veil — billowing dark mist that sweeps in from edges */
+@keyframes dark-smoke-veil {
+  0%   { opacity: 0; transform: translateY(-12%) scale(1.2); filter: blur(60px); }
+  18%  { opacity: 1; filter: blur(22px); }
+  50%  { opacity: 1; transform: translateY(0) scale(1); filter: blur(8px); }
+  82%  { opacity: 0.88; filter: blur(4px); }
+  100% { opacity: 0; filter: blur(0); }
+}
+/* Lightning glint — single sharp white flash across the void at peak darkness */
+@keyframes dark-lightning {
+  0%, 35% { opacity: 0; transform: translateX(-100%) skewX(-30deg); }
+  42%     { opacity: 0.85; }
+  48%     { opacity: 0; }
+  52%     { opacity: 0.6; }
+  56%, 100% { opacity: 0; transform: translateX(120%) skewX(-30deg); }
+}
+/* Ember pulse — deep indigo glow that throbs at the heart of the void */
+@keyframes dark-ember {
+  0%, 100% { opacity: 0; transform: scale(0.6); }
+  40%       { opacity: 0.55; transform: scale(1.1); }
+  55%       { opacity: 0.7;  transform: scale(0.95); }
+  72%       { opacity: 0.4;  transform: scale(1.3); }
+}
+
 /* ── Modal keyframes ── */
 @keyframes backdropIn {
   from { opacity: 0; }
@@ -173,6 +360,26 @@
 }
 
 @layer base {
+  :root {
+    --bg-base: #fdfcf6;
+    --bg-elevated: #f5f2ff;
+    --text-primary: #1a1040;
+    --text-secondary: #374151;
+    --text-muted: #6b7280;
+    --border-subtle: rgba(99, 102, 241, 0.12);
+    color-scheme: light;
+  }
+
+  html.dark {
+    --bg-base: #030014;
+    --bg-elevated: #0a0a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    color-scheme: dark;
+  }
+
   *,
   ::after,
   ::before,
@@ -186,7 +393,14 @@
   }
 
   body {
-    background-color: #030014;
+    background-color: var(--bg-base);
+    transition: background-color 0.4s ease;
+  }
+
+  /* ─── WATER FLOOD & DARK ECLIPSE — now driven by canvas (theme-toggle.tsx) ─── */
+  /* Class kept for cursor lock during transition; visual layers come from canvas */
+  body.theme-transitioning {
+    overflow: hidden;
   }
 
   /* Custom scrollbar */
@@ -420,4 +634,201 @@
       transparent
     );
   }
+}
+
+/* ── Light mode overrides ───────────────────────────────────────── */
+html:not(.dark) .glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(99, 102, 241, 0.12);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    0 4px 24px -6px rgba(99, 102, 241, 0.1);
+}
+
+html:not(.dark) .glass-heavy {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border: 1px solid rgba(99, 102, 241, 0.14);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 1),
+    0 8px 40px -10px rgba(99, 102, 241, 0.18);
+}
+
+html:not(.dark) .glass-light {
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(99, 102, 241, 0.08);
+}
+
+html:not(.dark) .glass-nav {
+  background: rgba(253, 252, 246, 0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(99, 102, 241, 0.10) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+html:not(.dark) .text-gradient {
+  background: linear-gradient(135deg, #1a1040 0%, #4f46e5 30%, #7c3aed 60%, #a21caf 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+html:not(.dark) ::selection {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #1a1040;
+}
+
+/* Light mode: scrollbar subtle */
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
+}
+
+/* ─── Underwater floating utilities ─── */
+.underwater-drift   { animation: underwater-drift-1 14s ease-in-out infinite; will-change: transform; }
+.underwater-drift-2 { animation: underwater-drift-2 16s ease-in-out infinite; will-change: transform; }
+.underwater-drift-3 { animation: underwater-drift-3 13s ease-in-out infinite; will-change: transform; }
+.underwater-drift-4 { animation: underwater-drift-4 18s ease-in-out infinite; will-change: transform; }
+.underwater-drift-5 { animation: underwater-drift-5 15s ease-in-out infinite; will-change: transform; }
+
+/* Legacy aliases — kept so existing class refs still drift */
+.light-float    { animation: underwater-drift-1 14s ease-in-out infinite; will-change: transform; }
+.light-float-2  { animation: underwater-drift-2 16s ease-in-out infinite; will-change: transform; }
+.light-float-3  { animation: underwater-drift-3 13s ease-in-out infinite; will-change: transform; }
+.light-float-4  { animation: underwater-drift-4 18s ease-in-out infinite; will-change: transform; }
+.light-float-5  { animation: underwater-drift-5 15s ease-in-out infinite; will-change: transform; }
+
+/* Light-mode glass — pale sea-foam, dark text legible.
+   Cards drift slowly with underwater currents (different cycles per nth). */
+html:not(.dark) .glass {
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  border: 1px solid rgba(20, 100, 140, 0.18);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    inset 0 -8px 24px -10px rgba(40, 130, 165, 0.10),
+    0 8px 28px -10px rgba(20, 80, 120, 0.20),
+    0 22px 56px -22px rgba(20, 100, 140, 0.25);
+  animation: underwater-drift-1 14s ease-in-out infinite;
+  will-change: transform;
+}
+html:not(.dark) .glass:nth-of-type(2n)   { animation: underwater-drift-2 16s ease-in-out infinite; }
+html:not(.dark) .glass:nth-of-type(3n)   { animation: underwater-drift-3 13s ease-in-out infinite; }
+html:not(.dark) .glass:nth-of-type(4n)   { animation: underwater-drift-4 18s ease-in-out infinite; }
+html:not(.dark) .glass:nth-of-type(5n)   { animation: underwater-drift-5 15s ease-in-out infinite; }
+
+html:not(.dark) .glass-heavy {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(20, 100, 140, 0.20);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 1),
+    inset 0 -12px 32px -12px rgba(40, 130, 165, 0.13),
+    0 12px 40px -12px rgba(20, 80, 120, 0.22),
+    0 30px 72px -28px rgba(20, 100, 140, 0.30);
+  animation: underwater-drift-3 13s ease-in-out infinite;
+  will-change: transform;
+}
+html:not(.dark) .glass-heavy:nth-of-type(2n) { animation: underwater-drift-4 18s ease-in-out infinite; }
+html:not(.dark) .glass-heavy:nth-of-type(3n) { animation: underwater-drift-5 15s ease-in-out infinite; }
+html:not(.dark) .glass-heavy:nth-of-type(4n) { animation: underwater-drift-2 16s ease-in-out infinite; }
+
+html:not(.dark) .glass-light {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(20, 100, 140, 0.15);
+  animation: underwater-drift-2 16s ease-in-out infinite;
+  will-change: transform;
+}
+html:not(.dark) .glass-light:nth-of-type(2n) { animation: underwater-drift-1 14s ease-in-out infinite; }
+html:not(.dark) .glass-light:nth-of-type(3n) { animation: underwater-drift-4 18s ease-in-out infinite; }
+
+/* ── Light-mode card rescue — gray "VSCode" look gone ── */
+html:not(.dark) .bg-white\/\[0\.03\],
+html:not(.dark) .bg-white\/\[0\.04\] {
+  background-color: rgba(255, 255, 255, 0.65) !important;
+}
+html:not(.dark) .bg-white\/\[0\.06\] {
+  background-color: rgba(255, 255, 255, 0.78) !important;
+}
+html:not(.dark) .border-white\/5,
+html:not(.dark) .border-white\/10,
+html:not(.dark) .border-white\/12 {
+  border-color: rgba(15, 60, 95, 0.22) !important;
+}
+
+/* ── Light-mode text — black/near-black for readability, no washed gray ──
+   Body / paragraph / labels all promoted to slate-800 or darker.        */
+html:not(.dark) .text-gray-200,
+html:not(.dark) .text-gray-300,
+html:not(.dark) .text-gray-400 {
+  color: rgb(30, 41, 59) !important;     /* slate-800 */
+}
+html:not(.dark) .text-gray-500,
+html:not(.dark) .text-gray-600,
+html:not(.dark) .text-gray-700,
+html:not(.dark) .text-gray-800,
+html:not(.dark) .text-gray-900 {
+  color: rgb(15, 23, 42) !important;     /* slate-900 (near black) */
+}
+html:not(.dark) .text-slate-400,
+html:not(.dark) .text-slate-500 {
+  color: rgb(30, 41, 59) !important;
+}
+html:not(.dark) .text-slate-600,
+html:not(.dark) .text-slate-700,
+html:not(.dark) .text-slate-800 {
+  color: rgb(15, 23, 42) !important;
+}
+/* Tertiary mono labels / dim metadata — keep them readable but muted */
+html:not(.dark) .text-gray-400.font-mono,
+html:not(.dark) .text-gray-500.font-mono,
+html:not(.dark) .text-slate-500.font-mono,
+html:not(.dark) .text-slate-600.font-mono {
+  color: rgb(51, 65, 85) !important;     /* slate-700 — readable on white */
+}
+
+/* Decorative thin separators / dividers — keep them as light hairlines */
+html:not(.dark) .bg-gray-200,
+html:not(.dark) .bg-gray-300 {
+  background-color: rgb(203, 213, 225) !important; /* slate-300 */
+}
+
+/* Header in light mode — anchored, doesn't bob (so menu stays usable) */
+html:not(.dark) header .glass,
+html:not(.dark) header .glass-heavy,
+html:not(.dark) header .glass-nav {
+  animation: none !important;
+}
+
+/* Disable float when reduced-motion is requested */
+@media (prefers-reduced-motion: reduce) {
+  html:not(.dark) .glass,
+  html:not(.dark) .glass-heavy,
+  html:not(.dark) .glass-light,
+  .light-float, .light-float-2, .light-float-3, .light-float-4, .light-float-5 {
+    animation: none !important;
+  }
+}
+
+/* Light mode body fallback — pale sea-water tint, light enough for dark text.
+   The LightBackground canvas paints the real interactive sea surface on top. */
+html:not(.dark) body {
+  background-color: #d4f0f8;
+  color: #0f172a; /* slate-900 default for legibility */
+}
+html:not(.dark) {
+  color: #0f172a;
 }

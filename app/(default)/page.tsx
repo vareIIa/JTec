@@ -4,7 +4,7 @@ export const metadata = {
     "JTEC é uma empresa de tecnologia especializada em desenvolvimento fullstack, inteligência artificial e infraestrutura de servidores.",
 };
 
-import InteractiveBackground from "@/components/interactive-background";
+import BackgroundManager from "@/components/background-manager";
 import IntroReveal from "@/components/intro-reveal";
 import Hero from "@/components/hero-home";
 import Workflows from "@/components/workflows";
@@ -14,7 +14,7 @@ import Cta from "@/components/cta";
 export default function Home() {
   return (
     <>
-      <InteractiveBackground />
+      <BackgroundManager />
       <IntroReveal />
       <Hero />
       <Workflows />

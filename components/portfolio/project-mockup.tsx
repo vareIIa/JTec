@@ -16,9 +16,9 @@ function MyCoachMockup() {
   ];
 
   return (
-    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0d1117] flex text-[10px]">
+    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0a1428] flex text-[10px]">
       {/* Sidebar esquerda */}
-      <div className="w-36 flex-shrink-0 bg-[#161b22] border-r border-white/5 flex flex-col">
+      <div className="w-36 flex-shrink-0 bg-[#11192e] border-r border-white/5 flex flex-col">
         <div className="px-3 py-2.5 border-b border-white/5">
           <div className="flex items-center gap-1.5 mb-0.5">
             <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
@@ -64,7 +64,7 @@ function MyCoachMockup() {
       {/* Chat principal */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-3 py-2 border-b border-white/5 bg-[#0d1117]">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-white/5 bg-[#0a1428]">
           <div>
             <div className="text-[9px] font-medium text-white">Plano de Aula</div>
             <div className="text-[7px] text-gray-500">8° Ano · História · 2h</div>
@@ -132,8 +132,8 @@ function MyCoachMockup() {
 function DashboardMockup({ gradient }: { gradient: string }) {
   const bars = [65, 42, 78, 55, 90, 38, 72];
   return (
-    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0d1117] flex flex-col text-[9px]">
-      <div className="px-3 py-2 border-b border-white/5 flex items-center justify-between bg-[#161b22]">
+    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0a1428] flex flex-col text-[9px]">
+      <div className="px-3 py-2 border-b border-white/5 flex items-center justify-between bg-[#11192e]">
         <div className="flex items-center gap-1.5">
           <div className={`h-3.5 w-3.5 rounded bg-gradient-to-br ${gradient}`} />
           <span className="text-white font-medium text-[8px]">Analytics Dashboard</span>
@@ -173,8 +173,8 @@ function DashboardMockup({ gradient }: { gradient: string }) {
 
 function EcomMockup({ gradient }: { gradient: string }) {
   return (
-    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0d1117] flex flex-col text-[9px]">
-      <div className="px-3 py-2 border-b border-white/5 bg-[#161b22] flex items-center justify-between">
+    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0a1428] flex flex-col text-[9px]">
+      <div className="px-3 py-2 border-b border-white/5 bg-[#11192e] flex items-center justify-between">
         <span className="text-white font-medium text-[8px]">🛒 Loja Online</span>
         <div className={`text-[7px] px-1.5 py-0.5 rounded-full bg-gradient-to-r ${gradient} text-white`}>3 itens</div>
       </div>
@@ -203,8 +203,8 @@ function EcomMockup({ gradient }: { gradient: string }) {
 
 function GenericMockup({ gradient }: { gradient: string }) {
   return (
-    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0d1117] flex flex-col text-[9px]">
-      <div className="px-3 py-2 border-b border-white/5 bg-[#161b22] flex items-center gap-1.5">
+    <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0a1428] flex flex-col text-[9px]">
+      <div className="px-3 py-2 border-b border-white/5 bg-[#11192e] flex items-center gap-1.5">
         <div className="flex gap-1">
           <div className="h-2 w-2 rounded-full bg-red-500/60" />
           <div className="h-2 w-2 rounded-full bg-yellow-500/60" />

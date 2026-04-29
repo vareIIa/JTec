@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "./logo";
+import ThemeToggle from "./theme-toggle";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -21,7 +22,7 @@ export default function Header() {
         }`}
       >
         {/* Top sheen */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent dark:via-white/30 via-indigo-300/40" />
 
         <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-5">
           {/* Logo */}
@@ -43,8 +44,8 @@ export default function Header() {
                 href={item.href}
                 className={`relative rounded-full px-3 py-1.5 text-sm transition-all ${
                   item.highlight
-                    ? "text-white/90 hover:bg-white/5"
-                    : "text-gray-400 hover:bg-white/5 hover:text-white"
+                    ? "text-gray-800 hover:bg-gray-100/80 dark:text-white/90 dark:hover:bg-white/5"
+                    : "text-gray-500 hover:bg-gray-100/80 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
                 }`}
               >
                 {item.highlight && (
@@ -57,9 +58,10 @@ export default function Header() {
 
           {/* CTA */}
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Link
               href="/loja"
-              className="group hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-gray-200 backdrop-blur-xl transition-all hover:border-white/20 hover:bg-white/[0.06]"
+              className="group hidden sm:inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-100/80 px-3 py-1.5 text-sm text-gray-700 backdrop-blur-xl transition-all hover:border-gray-300 hover:bg-gray-200/80 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-200 dark:hover:border-white/20 dark:hover:bg-white/[0.06]"
             >
               <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="9" cy="20" r="1.5" />

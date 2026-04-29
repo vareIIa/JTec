@@ -19,7 +19,7 @@ export default function Cta() {
             {/* LEFT — Content */}
             <div>
               <div
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-400 backdrop-blur-xl"
+                className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-500 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400"
                 data-aos="fade-up"
               >
                 <span className="h-1 w-1 rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-400" />
@@ -31,14 +31,14 @@ export default function Cta() {
                 data-aos="fade-up"
                 data-aos-delay={100}
               >
-                <span className="text-white/90">Vamos construir </span>
-                <span className="bg-gradient-to-br from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
+                <span className="text-gray-900 dark:text-white/90">Vamos construir </span>
+                <span className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-indigo-300 dark:via-violet-300 dark:to-fuchsia-300 bg-clip-text text-transparent">
                   algo incrível.
                 </span>
               </h2>
 
               <p
-                className="mb-8 text-lg leading-relaxed text-gray-400"
+                className="mb-8 text-lg leading-relaxed text-gray-500 dark:text-gray-400"
                 data-aos="fade-up"
                 data-aos-delay={200}
               >
@@ -72,9 +72,9 @@ export default function Cta() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
                 </span>
-                <span className="text-sm text-emerald-100">
+                <span className="text-sm text-emerald-800 dark:text-emerald-100">
                   <span className="font-semibold">Disponível agora</span>
-                  <span className="text-emerald-200/60"> · Resposta em até 24h</span>
+                  <span className="text-emerald-700/70 dark:text-emerald-200/60"> · Resposta em até 24h</span>
                 </span>
               </div>
             </div>
@@ -126,7 +126,7 @@ export default function Cta() {
                       <div className="mb-0.5 text-[11px] uppercase tracking-wider text-gray-500">
                         {card.label}
                       </div>
-                      <div className="truncate font-medium text-white transition-colors group-hover:text-white">
+                      <div className="truncate font-medium text-gray-900 dark:text-white transition-colors">
                         {card.value}
                       </div>
                     </div>
