@@ -76,10 +76,10 @@ function playWaterSound() {
 function playStormSound() {
   try {
     const ac = new AudioContext();
-    const dur = 2.4;
+    const dur = 4.4;
     const sr = ac.sampleRate;
 
-    // Brown noise (deep bass rumble for thunder)
+    // Brown noise (deep bass rumble for thunder) — longer arc, two swells
     const tbuf = ac.createBuffer(2, Math.ceil(sr * dur), sr);
     for (let ch = 0; ch < 2; ch++) {
       const d = tbuf.getChannelData(ch);
@@ -101,16 +101,17 @@ function playStormSound() {
     tls.frequency.value = 80;
     tls.gain.value = 9;
     const tg = ac.createGain();
-    tg.gain.setValueAtTime(0, ac.currentTime);
-    tg.gain.linearRampToValueAtTime(0.75, ac.currentTime + 0.25);
-    tg.gain.setValueAtTime(0.75, ac.currentTime + 0.7);
-    tg.gain.linearRampToValueAtTime(0.55, ac.currentTime + 1.1);
-    tg.gain.linearRampToValueAtTime(0.68, ac.currentTime + 1.35);
-    tg.gain.linearRampToValueAtTime(0, ac.currentTime + dur);
+    const t0 = ac.currentTime;
+    tg.gain.setValueAtTime(0, t0);
+    tg.gain.linearRampToValueAtTime(0.62, t0 + 0.55);
+    tg.gain.linearRampToValueAtTime(0.78, t0 + 1.4);
+    tg.gain.linearRampToValueAtTime(0.5,  t0 + 2.3);
+    tg.gain.linearRampToValueAtTime(0.66, t0 + 3.0);
+    tg.gain.linearRampToValueAtTime(0,    t0 + dur);
     tsrc.connect(tlp); tlp.connect(tls); tls.connect(tg); tg.connect(ac.destination);
-    tsrc.start(); tsrc.stop(ac.currentTime + dur);
+    tsrc.start(); tsrc.stop(t0 + dur);
 
-    // Wind — bandpass sweeping down
+    // Wind — bandpass sweeping down, longer envelope
     const wbuf = ac.createBuffer(1, Math.ceil(sr * dur), sr);
     const wd = wbuf.getChannelData(0);
     for (let i = 0; i < wd.length; i++) wd[i] = Math.random() * 2 - 1;
@@ -118,19 +119,22 @@ function playStormSound() {
     wsrc.buffer = wbuf;
     const wbp = ac.createBiquadFilter();
     wbp.type = "bandpass";
-    wbp.frequency.setValueAtTime(900, ac.currentTime);
-    wbp.frequency.linearRampToValueAtTime(280, ac.currentTime + dur);
+    wbp.frequency.setValueAtTime(950, t0);
+    wbp.frequency.linearRampToValueAtTime(420, t0 + dur * 0.55);
+    wbp.frequency.linearRampToValueAtTime(220, t0 + dur);
     wbp.Q.value = 0.6;
     const wg = ac.createGain();
-    wg.gain.setValueAtTime(0, ac.currentTime);
-    wg.gain.linearRampToValueAtTime(0.22, ac.currentTime + 0.4);
-    wg.gain.linearRampToValueAtTime(0, ac.currentTime + dur);
+    wg.gain.setValueAtTime(0, t0);
+    wg.gain.linearRampToValueAtTime(0.24, t0 + 0.7);
+    wg.gain.linearRampToValueAtTime(0.18, t0 + dur * 0.7);
+    wg.gain.linearRampToValueAtTime(0, t0 + dur);
     wsrc.connect(wbp); wbp.connect(wg); wg.connect(ac.destination);
-    wsrc.start(); wsrc.stop(ac.currentTime + dur);
+    wsrc.start(); wsrc.stop(t0 + dur);
 
-    // Lightning crackle — two short high-freq bursts
-    for (let b = 0; b < 2; b++) {
-      const t0 = ac.currentTime + 0.38 + b * 0.22;
+    // Lightning crackle — three bursts spread across the storm
+    const burstTimes = [0.55, 1.25, 1.95];
+    for (let b = 0; b < burstTimes.length; b++) {
+      const tb = t0 + burstTimes[b];
       const lbuf = ac.createBuffer(1, Math.ceil(sr * 0.09), sr);
       const ld = lbuf.getChannelData(0);
       for (let i = 0; i < ld.length; i++) ld[i] = Math.random() * 2 - 1;
@@ -140,10 +144,10 @@ function playStormSound() {
       lhp.type = "highpass";
       lhp.frequency.value = 3000;
       const lg = ac.createGain();
-      lg.gain.setValueAtTime(0.38 - b * 0.08, t0);
-      lg.gain.exponentialRampToValueAtTime(0.001, t0 + 0.09);
+      lg.gain.setValueAtTime(0.36 - b * 0.06, tb);
+      lg.gain.exponentialRampToValueAtTime(0.001, tb + 0.09);
       lsrc.connect(lhp); lhp.connect(lg); lg.connect(ac.destination);
-      lsrc.start(t0); lsrc.stop(t0 + 0.1);
+      lsrc.start(tb); lsrc.stop(tb + 0.1);
     }
 
     setTimeout(() => ac.close(), (dur + 0.5) * 1000);
@@ -242,9 +246,9 @@ function playWaterFlood(onCover: () => void) {
   requestAnimationFrame(frame);
 }
 
-/* ── Storm / Dark Entry — Simpsons-style clouds + JTEC logo ─────────────
-   Clouds roll in from both sides, lightning flashes, JTEC glows through,
-   screen goes dark, dark mode is revealed as clouds part.               */
+/* ── Storm / Dark Entry — Realistic volumetric clouds + JTEC logo ─────────
+   Clouds drift in fluidly with multi-layer turbulence, deform organically,
+   JTEC glows through and lingers, dark mode is revealed as storm settles. */
 function playDarkEclipse(onCover: () => void) {
   const setup = setupCanvas();
   if (!setup) return;
@@ -253,104 +257,251 @@ function playDarkEclipse(onCover: () => void) {
 
   const cx = W / 2;
   const cy = H / 2;
-  const DURATION = 2200;
-  const COVER_AT = 0.54; // when to flip theme
+  const DURATION = 4200;          // longer overall
+  const COVER_AT = 0.48;          // theme flips a bit earlier so logo can breathe
+  const LOGO_IN_START = 0.18;
+  const LOGO_FULL_AT  = 0.34;
+  const LOGO_HOLD_END = 0.62;     // long hold for readability
+  const LOGO_OUT_END  = 0.78;
   const start = performance.now();
   let covered = false;
 
-  /* Pre-render cloud sprites once — no gradient construction per frame */
+  /* ── Realistic volumetric cloud sprite ──────────────────────────────────
+     Layered radial gradients with organic offset blobs + soft inner highlights
+     for that "3D wisp" depth. Hue drifts from deep indigo to violet. */
   type CloudSprite = { img: HTMLCanvasElement; w: number; h: number };
-  type Cloud = { sprite: CloudSprite; startX: number; startY: number; restX: number; restY: number; speed: number; alphaMax: number };
+  type Cloud = {
+    sprite: CloudSprite;
+    startX: number; startY: number;
+    restX:  number; restY:  number;
+    driftX: number; driftY: number;       // continuous post-arrival drift
+    speed: number;                         // arrival speed multiplier
+    alphaMax: number;
+    rot: number; rotSpeed: number;         // gentle rotation for liveness
+    scaleBase: number; scalePulse: number; // breathing scale
+    phase: number;
+    depth: number;                         // 0 = far, 1 = near (parallax + size)
+  };
 
-  const buildCloudSprite = (sw: number): CloudSprite => {
-    const sh = Math.ceil(sw * (0.55 + Math.random() * 0.25));
-    const pad = sw * 0.5;
+  const buildCloudSprite = (sw: number, depth: number): CloudSprite => {
+    const sh = Math.ceil(sw * (0.5 + Math.random() * 0.3));
+    const pad = sw * 0.6;
     const cw = Math.ceil(sw + pad * 2);
     const ch = Math.ceil(sh + pad * 2);
     const c = document.createElement("canvas");
     c.width = cw; c.height = ch;
     const cc = c.getContext("2d")!;
-    const blobCount = 5 + Math.floor(Math.random() * 4);
-    for (let b = 0; b < blobCount; b++) {
-      const bx = pad + Math.random() * sw;
-      const by = pad * 0.8 + Math.random() * sh;
-      const br = sw * (0.38 + Math.random() * 0.44);
-      const hue = 228 + Math.random() * 24;
-      const g = cc.createRadialGradient(bx, by, 0, bx, by, br);
-      g.addColorStop(0,   `hsla(${hue},55%,7%,0.92)`);
-      g.addColorStop(0.35,`hsla(${hue},50%,5%,0.72)`);
-      g.addColorStop(0.7, `hsla(${hue},45%,4%,0.38)`);
-      g.addColorStop(1,   `hsla(${hue},40%,3%,0)`);
+
+    const cxL = cw / 2;
+    const cyL = ch / 2;
+
+    // Base hue varies between indigo/violet/blue-purple
+    const baseHue = 232 + Math.random() * 28;
+    const sat = 38 + Math.random() * 18;
+
+    // Far clouds darker/cooler, near clouds richer
+    const lightShift = depth * 4;
+
+    /* Pass 1 — large soft body (low-frequency volume) */
+    const bigBlobs = 4 + Math.floor(Math.random() * 3);
+    for (let b = 0; b < bigBlobs; b++) {
+      const ang = (b / bigBlobs) * Math.PI * 2 + Math.random() * 0.6;
+      const dist = sw * (0.05 + Math.random() * 0.22);
+      const bx = cxL + Math.cos(ang) * dist;
+      const by = cyL + Math.sin(ang) * dist * 0.55;
+      const br = sw * (0.42 + Math.random() * 0.32);
+      const hue = baseHue + (Math.random() - 0.5) * 12;
+      const g = cc.createRadialGradient(bx, by - br * 0.12, 0, bx, by, br);
+      g.addColorStop(0,    `hsla(${hue}, ${sat}%, ${10 + lightShift}%, 0.92)`);
+      g.addColorStop(0.32, `hsla(${hue}, ${sat - 4}%, ${7 + lightShift}%, 0.78)`);
+      g.addColorStop(0.62, `hsla(${hue - 4}, ${sat - 8}%, ${5 + lightShift}%, 0.42)`);
+      g.addColorStop(0.85, `hsla(${hue - 8}, ${sat - 12}%, ${4}%, 0.14)`);
+      g.addColorStop(1,    `hsla(${hue - 8}, ${sat - 12}%, ${3}%, 0)`);
       cc.fillStyle = g;
       cc.beginPath(); cc.arc(bx, by, br, 0, Math.PI * 2); cc.fill();
     }
+
+    /* Pass 2 — mid-frequency wisps (organic protrusions) */
+    const midBlobs = 7 + Math.floor(Math.random() * 5);
+    for (let b = 0; b < midBlobs; b++) {
+      const ang = Math.random() * Math.PI * 2;
+      const dist = sw * (0.18 + Math.random() * 0.32);
+      const bx = cxL + Math.cos(ang) * dist;
+      const by = cyL + Math.sin(ang) * dist * 0.6;
+      const br = sw * (0.16 + Math.random() * 0.22);
+      const hue = baseHue + (Math.random() - 0.5) * 16;
+      const g = cc.createRadialGradient(bx, by - br * 0.18, 0, bx, by, br);
+      g.addColorStop(0,    `hsla(${hue}, ${sat + 4}%, ${12 + lightShift}%, 0.62)`);
+      g.addColorStop(0.5,  `hsla(${hue}, ${sat}%, ${7 + lightShift}%, 0.32)`);
+      g.addColorStop(1,    `hsla(${hue - 6}, ${sat - 10}%, ${4}%, 0)`);
+      cc.fillStyle = g;
+      cc.beginPath(); cc.arc(bx, by, br, 0, Math.PI * 2); cc.fill();
+    }
+
+    /* Pass 3 — top highlight rim (lightning-lit underbelly) */
+    cc.globalCompositeOperation = "screen";
+    const rimHue = 258 + Math.random() * 18;
+    const rimCount = 3 + Math.floor(Math.random() * 2);
+    for (let r = 0; r < rimCount; r++) {
+      const rx = cxL + (Math.random() - 0.5) * sw * 0.5;
+      const ry = cyL - sh * (0.05 + Math.random() * 0.15);
+      const rr = sw * (0.18 + Math.random() * 0.16);
+      const g = cc.createRadialGradient(rx, ry, 0, rx, ry, rr);
+      g.addColorStop(0,   `hsla(${rimHue}, 70%, 55%, 0.18)`);
+      g.addColorStop(0.4, `hsla(${rimHue}, 60%, 40%, 0.08)`);
+      g.addColorStop(1,   "rgba(0,0,0,0)");
+      cc.fillStyle = g;
+      cc.beginPath(); cc.arc(rx, ry, rr, 0, Math.PI * 2); cc.fill();
+    }
+    cc.globalCompositeOperation = "source-over";
+
+    /* Pass 4 — tiny sparkle wisps for organic micro-detail */
+    cc.globalCompositeOperation = "lighter";
+    const wispCount = 6 + Math.floor(Math.random() * 4);
+    for (let w = 0; w < wispCount; w++) {
+      const wx = cxL + (Math.random() - 0.5) * sw * 0.7;
+      const wy = cyL + (Math.random() - 0.5) * sh * 0.7;
+      const wr = sw * (0.04 + Math.random() * 0.08);
+      const g = cc.createRadialGradient(wx, wy, 0, wx, wy, wr);
+      g.addColorStop(0, `hsla(${baseHue + 10}, 50%, 25%, 0.10)`);
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      cc.fillStyle = g;
+      cc.beginPath(); cc.arc(wx, wy, wr, 0, Math.PI * 2); cc.fill();
+    }
+    cc.globalCompositeOperation = "source-over";
+
     return { img: c, w: cw, h: ch };
   };
 
-  // 20 clouds: 10 from left, 10 from right — rest positions spread over screen
+  // 28 clouds — staggered depth (parallax) + 3 directional sources for organic flow
   const clouds: Cloud[] = [];
-  for (let i = 0; i < 20; i++) {
-    const fromLeft = i < 10;
-    const col = i % 5;
-    const row = Math.floor((i % 10) / 5);
-    const sz = 200 + Math.random() * 220;
-    const sprite = buildCloudSprite(sz);
-    // Rest position: cover screen in a loose grid
-    const restX = W * (0.05 + col * 0.22) + (Math.random() - 0.5) * W * 0.08;
-    const restY = H * (0.1  + row * 0.42) + (Math.random() - 0.5) * H * 0.18;
+  const CLOUD_COUNT = 28;
+  for (let i = 0; i < CLOUD_COUNT; i++) {
+    const depth = Math.random();                 // 0 far, 1 near
+    const fromLeft = i % 2 === 0;
+    const sz = (160 + Math.random() * 240) * (0.7 + depth * 0.6);
+    const sprite = buildCloudSprite(sz, depth);
+
+    // Spread rest positions in a loose grid with strong randomness
+    const col = i % 6;
+    const row = Math.floor(i / 6);
+    const restX = W * (-0.05 + col * 0.205) + (Math.random() - 0.5) * W * 0.12;
+    const restY = H * (-0.08 + row * 0.24) + (Math.random() - 0.5) * H * 0.18;
+
+    // Diagonal entry — adds fluidity vs. pure horizontal
+    const yJitter = (Math.random() - 0.5) * H * 0.35;
+    const startX = fromLeft ? -sprite.w * 0.6 - 80 : W + sprite.w * 0.6 + 80;
+    const startY = restY + yJitter;
+
     clouds.push({
       sprite,
-      startX: fromLeft ? -sprite.w * 0.5 - 60 : W + sprite.w * 0.5 + 60,
-      startY: restY + (Math.random() - 0.5) * H * 0.1,
-      restX, restY,
-      speed:    0.65 + Math.random() * 0.7,
-      alphaMax: 0.72 + Math.random() * 0.28,
+      startX, startY, restX, restY,
+      driftX: (fromLeft ? 1 : -1) * (8 + Math.random() * 14) * (0.6 + depth * 0.6),
+      driftY: (Math.random() - 0.5) * 10,
+      speed: 0.45 + Math.random() * 0.55 + depth * 0.25,
+      alphaMax: (0.55 + Math.random() * 0.4) * (0.6 + depth * 0.5),
+      rot: (Math.random() - 0.5) * 0.25,
+      rotSpeed: (Math.random() - 0.5) * 0.0004,
+      scaleBase: 0.92 + Math.random() * 0.16,
+      scalePulse: 0.04 + Math.random() * 0.06,
+      phase: Math.random() * Math.PI * 2,
+      depth,
     });
   }
+  // Sort: far clouds first (drawn behind), near clouds last (front)
+  clouds.sort((a, b) => a.depth - b.depth);
 
-  // Lightning: two flashes, animated over ~80ms each
+  // Lightning flashes — three across the storm
   let flash = 0;
-  const flashTimes = [0.32, 0.46];
+  const flashTimes = [0.22, 0.36, 0.5];
   const flashFired = new Set<number>();
 
   const easeInOut = (t: number) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const easeOut   = (t: number) => 1 - Math.pow(1 - t, 2.5);
+  const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const smoothstep = (a: number, b: number, t: number) => {
+    const x = Math.max(0, Math.min(1, (t - a) / (b - a)));
+    return x * x * (3 - 2 * x);
+  };
 
   const frame = (now: number) => {
-    const raw = Math.min((now - start) / DURATION, 1);
+    const elapsed = now - start;
+    const raw = Math.min(elapsed / DURATION, 1);
     ctx.clearRect(0, 0, W, H);
 
-    // ── Cloud progress ──
-    const cloudIn   = raw < COVER_AT  ? easeInOut(raw / COVER_AT) : 1;
-    const cloudOut  = raw > COVER_AT + 0.08 ? easeOut((raw - COVER_AT - 0.08) / (1 - COVER_AT - 0.08)) : 0;
-    const cloudAlphaEnv = cloudOut > 0 ? Math.max(0, 1 - cloudOut * 1.15) : 1;
+    // ── Cloud arrival + drift ──
+    // Arrival: clouds fly to rest position (raw 0 → COVER_AT)
+    // Drift: after arrival, continuous gentle motion (raw COVER_AT → end)
+    // Departure: late phase, clouds fade out
+    const cloudIn = easeInOutCubic(Math.min(raw / COVER_AT, 1));
+    const cloudOut = raw > LOGO_OUT_END
+      ? easeOut((raw - LOGO_OUT_END) / (1 - LOGO_OUT_END))
+      : 0;
+    const cloudAlphaEnv = Math.max(0, 1 - cloudOut);
+
+    // Sky color wash that intensifies as storm builds
+    const skyWash = smoothstep(0.05, COVER_AT * 0.9, raw) * cloudAlphaEnv;
+    if (skyWash > 0) {
+      const sg = ctx.createLinearGradient(0, 0, 0, H);
+      sg.addColorStop(0,    `rgba(8, 6, 24, ${skyWash * 0.55})`);
+      sg.addColorStop(0.55, `rgba(14, 10, 38, ${skyWash * 0.7})`);
+      sg.addColorStop(1,    `rgba(4, 3, 18, ${skyWash * 0.85})`);
+      ctx.fillStyle = sg;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Continuous drift time after arrival — keeps clouds living
+    const driftT = Math.max(0, elapsed - DURATION * COVER_AT) / 1000;
 
     for (const c of clouds) {
+      // Arrival progress (per-cloud staggered)
       const t = Math.min(cloudIn * c.speed, 1);
-      const e = easeInOut(t);
-      const px = c.startX + (c.restX - c.startX) * e;
-      const py = c.startY + (c.restY - c.startY) * e;
-      const a   = Math.min(cloudIn * c.speed * 1.6, 1) * cloudAlphaEnv * c.alphaMax;
-      if (a < 0.01) continue;
-      ctx.globalAlpha = a;
-      ctx.drawImage(c.sprite.img, px - c.sprite.w / 2, py - c.sprite.h / 2);
-    }
-    ctx.globalAlpha = 1;
+      const e = easeInOutCubic(t);
 
-    // ── Full dark fill when clouds dense enough ──
-    const darkness = Math.max(0, Math.min(1, (cloudIn - 0.72) / 0.28));
+      // Base position from arrival
+      let px = c.startX + (c.restX - c.startX) * e;
+      let py = c.startY + (c.restY - c.startY) * e;
+
+      // Continuous drift after arrival (turbulent, multi-frequency)
+      px += c.driftX * driftT * 0.18
+          + Math.sin(driftT * 0.7 + c.phase)        * 14 * (0.5 + c.depth)
+          + Math.sin(driftT * 1.6 + c.phase * 1.7)  * 5;
+      py += c.driftY * driftT * 0.18
+          + Math.cos(driftT * 0.55 + c.phase * 1.3) * 9 * (0.5 + c.depth)
+          + Math.sin(driftT * 1.9 + c.phase * 0.6)  * 4;
+
+      // Breathing scale + slow rotation
+      const scale = c.scaleBase + Math.sin(driftT * 0.45 + c.phase) * c.scalePulse;
+      const rot = c.rot + c.rotSpeed * elapsed;
+
+      // Alpha blending — depth attenuation + envelope
+      const arrivalAlpha = Math.min(cloudIn * c.speed * 1.4, 1);
+      const a = arrivalAlpha * cloudAlphaEnv * c.alphaMax * (0.55 + c.depth * 0.5);
+      if (a < 0.01) continue;
+
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.translate(px, py);
+      ctx.rotate(rot);
+      ctx.scale(scale, scale);
+      ctx.drawImage(c.sprite.img, -c.sprite.w / 2, -c.sprite.h / 2);
+      ctx.restore();
+    }
+
+    // ── Theme switch ──
+    if (raw >= COVER_AT && !covered) { covered = true; onCover(); }
+
+    // ── Deep dark fill once clouds settle ──
+    const darkness = smoothstep(COVER_AT * 0.85, COVER_AT * 1.05, raw);
     const darkFade = darkness * cloudAlphaEnv;
     if (darkFade > 0) {
-      ctx.globalAlpha = darkFade;
+      ctx.globalAlpha = darkFade * 0.85;
       ctx.fillStyle = "rgb(3,1,14)";
       ctx.fillRect(0, 0, W, H);
       ctx.globalAlpha = 1;
     }
 
-    // ── Theme switch ──
-    if (cloudIn > 0.88 && !covered) { covered = true; onCover(); }
-
-    // ── Lightning flashes ──
+    // ── Lightning flashes (subtler so they don't overpower the logo) ──
     for (const ft of flashTimes) {
       if (raw >= ft && !flashFired.has(ft)) {
         flashFired.add(ft);
@@ -358,38 +509,45 @@ function playDarkEclipse(onCover: () => void) {
       }
     }
     if (flash > 0.01) {
-      ctx.globalAlpha = flash * 0.5;
-      ctx.fillStyle = "rgba(210,220,255,1)";
+      ctx.globalAlpha = flash * 0.38;
+      ctx.fillStyle = "rgba(190,200,255,1)";
       ctx.fillRect(0, 0, W, H);
       ctx.globalAlpha = 1;
-      flash *= 0.68; // fast natural decay
+      flash *= 0.74;
     }
 
-    // ── JTEC logo materialises through storm clouds ──
-    // Appears as clouds build, peaks at coverage, then fades to dark
-    const logoRaw = raw > 0.14 && raw < COVER_AT + 0.16
-      ? raw < 0.26 ? (raw - 0.14) / 0.12
-      : raw > COVER_AT ? Math.max(0, 1 - (raw - COVER_AT) / 0.16)
-      : 1
-      : 0;
+    // ── JTEC logo: graceful fade-in, long hold, graceful fade-out ──
+    let logoAlpha = 0;
+    if (raw >= LOGO_IN_START && raw <= LOGO_OUT_END) {
+      if (raw < LOGO_FULL_AT) {
+        logoAlpha = easeInOutCubic((raw - LOGO_IN_START) / (LOGO_FULL_AT - LOGO_IN_START));
+      } else if (raw < LOGO_HOLD_END) {
+        logoAlpha = 1;
+      } else {
+        logoAlpha = 1 - easeInOutCubic((raw - LOGO_HOLD_END) / (LOGO_OUT_END - LOGO_HOLD_END));
+      }
+    }
 
-    if (logoRaw > 0.01) {
+    if (logoAlpha > 0.01) {
       ctx.save();
 
-      // Halo glow behind logo (screen blend over clouds)
+      // Subtle vertical breathing on logo — feels alive, not static
+      const breathe = Math.sin(elapsed * 0.0018) * 2;
+
+      // Halo glow (screen blend)
       ctx.globalCompositeOperation = "screen";
-      ctx.globalAlpha = logoRaw * 0.65;
-      const haloR = Math.min(W, H) * 0.22;
-      const hg = ctx.createRadialGradient(cx, cy, 0, cx, cy, haloR);
-      hg.addColorStop(0,   "rgba(110,90,220,0.55)");
-      hg.addColorStop(0.5, "rgba(70,50,180,0.22)");
-      hg.addColorStop(1,   "rgba(30,15,90,0)");
+      ctx.globalAlpha = logoAlpha * 0.7;
+      const haloR = Math.min(W, H) * 0.26;
+      const hg = ctx.createRadialGradient(cx, cy + breathe, 0, cx, cy + breathe, haloR);
+      hg.addColorStop(0,    "rgba(140,110,240,0.6)");
+      hg.addColorStop(0.45, "rgba(90,60,200,0.28)");
+      hg.addColorStop(1,    "rgba(30,15,90,0)");
       ctx.fillStyle = hg;
-      ctx.beginPath(); ctx.arc(cx, cy, haloR, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy + breathe, haloR, 0, Math.PI * 2); ctx.fill();
 
       // JTEC text — three passes for glow-without-blur
       ctx.globalCompositeOperation = "source-over";
-      const fontSize = Math.min(W * 0.135, 130);
+      const fontSize = Math.min(W * 0.14, 140);
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
@@ -398,29 +556,29 @@ function playDarkEclipse(onCover: () => void) {
       textGrad.addColorStop(0.45, "rgba(167,139,250,1)");
       textGrad.addColorStop(1,    "rgba(232,121,249,1)");
 
-      // Outer glow pass
-      ctx.globalAlpha = logoRaw * 0.18;
-      ctx.font = `900 ${fontSize * 1.06}px system-ui,-apple-system,sans-serif`;
+      // Outer glow
+      ctx.globalAlpha = logoAlpha * 0.22;
+      ctx.font = `900 ${fontSize * 1.08}px system-ui,-apple-system,sans-serif`;
       ctx.fillStyle = "rgba(180,160,255,1)";
-      ctx.fillText("JTEC", cx, cy);
+      ctx.fillText("JTEC", cx, cy + breathe);
 
       // Mid glow
-      ctx.globalAlpha = logoRaw * 0.38;
-      ctx.font = `900 ${fontSize * 1.02}px system-ui,-apple-system,sans-serif`;
+      ctx.globalAlpha = logoAlpha * 0.42;
+      ctx.font = `900 ${fontSize * 1.03}px system-ui,-apple-system,sans-serif`;
       ctx.fillStyle = "rgba(200,185,255,1)";
-      ctx.fillText("JTEC", cx, cy);
+      ctx.fillText("JTEC", cx, cy + breathe);
 
       // Sharp core
-      ctx.globalAlpha = logoRaw * 0.92;
+      ctx.globalAlpha = logoAlpha * 0.96;
       ctx.font = `900 ${fontSize}px system-ui,-apple-system,sans-serif`;
       ctx.fillStyle = textGrad;
-      ctx.fillText("JTEC", cx, cy);
+      ctx.fillText("JTEC", cx, cy + breathe);
 
-      // Tagline under logo
-      ctx.globalAlpha = logoRaw * 0.55;
+      // Tagline
+      ctx.globalAlpha = logoAlpha * 0.62;
       ctx.font = `400 ${Math.max(fontSize * 0.18, 14)}px system-ui,-apple-system,sans-serif`;
-      ctx.fillStyle = "rgba(180,170,230,1)";
-      ctx.fillText("Tecnologia & Inovação", cx, cy + fontSize * 0.72);
+      ctx.fillStyle = "rgba(190,180,240,1)";
+      ctx.fillText("Tecnologia & Inovação", cx, cy + fontSize * 0.74 + breathe);
 
       ctx.restore();
     }

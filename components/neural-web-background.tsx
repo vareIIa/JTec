@@ -155,6 +155,7 @@ export default function NeuralWebBackground() {
     let lastAuroraAt = 0;
 
     const renderAurora = (now: number) => {
+      if (W <= 0 || H <= 0) return;
       auroraCanvas.width = W;
       auroraCanvas.height = H;
       const ax = auroraCanvas.getContext("2d")!;
@@ -181,19 +182,40 @@ export default function NeuralWebBackground() {
 
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-      W = canvas.parentElement?.clientWidth ?? window.innerWidth;
-      H = canvas.parentElement?.clientHeight ?? window.innerHeight;
+      const parent = canvas.parentElement;
+      const rect = parent?.getBoundingClientRect();
+      const newW = Math.max(
+        rect?.width ?? 0,
+        parent?.clientWidth ?? 0,
+        window.innerWidth,
+      );
+      const newH = Math.max(
+        rect?.height ?? 0,
+        parent?.clientHeight ?? 0,
+        window.innerHeight,
+      );
+      if (newW === W && newH === H) return;
+      W = newW;
+      H = newH;
       canvas.width = W * dpr;
       canvas.height = H * dpr;
       canvas.style.width = W + "px";
       canvas.style.height = H + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       lastAuroraAt = 0; // force refresh
+
+      // Reflow nodes that ended up outside new bounds
+      for (const n of nodesRef) {
+        if (n.x > W) n.x = Math.random() * W;
+        if (n.y > H) n.y = Math.random() * H;
+      }
     };
+    // Forward declaration — nodes built below; resize uses nodesRef
+    const nodesRef: Node[] = [];
     resize();
 
     // ── Build nodes ──
-    const nodes: Node[] = [];
+    const nodes = nodesRef;
     for (let i = 0; i < NODE_COUNT; i++) {
       const tier: Tier = i < HUB_COUNT ? 2 : i < HUB_COUNT + RELAY_COUNT ? 1 : 0;
       const baseR =
@@ -333,6 +355,12 @@ export default function NeuralWebBackground() {
     canvas.parentElement?.addEventListener("mousemove", onMove, { passive: true });
     canvas.parentElement?.addEventListener("mouseleave", onLeave, { passive: true });
     window.addEventListener("resize", resize);
+    window.addEventListener("orientationchange", resize);
+
+    // Catch container size changes (layout-driven, not window-driven)
+    const ro = new ResizeObserver(() => resize());
+    if (canvas.parentElement) ro.observe(canvas.parentElement);
+    ro.observe(document.documentElement);
 
     rebuildEdges();
 
@@ -419,7 +447,9 @@ export default function NeuralWebBackground() {
 
       // Layer 1 — Aurora (cached, refreshed every 500ms)
       if (now - lastAuroraAt > AURORA_REFRESH) renderAurora(now);
-      ctx.drawImage(auroraCanvas, 0, 0, W, H);
+      if (auroraCanvas.width > 0 && auroraCanvas.height > 0) {
+        ctx.drawImage(auroraCanvas, 0, 0, W, H);
+      }
 
       // Layer 2 — Edges (single batched stroke per category)
       ctx.lineCap = "round";
@@ -579,8 +609,10 @@ export default function NeuralWebBackground() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("orientationchange", resize);
       document.removeEventListener("visibilitychange", onVis);
       io.disconnect();
+      ro.disconnect();
       canvas.parentElement?.removeEventListener("mousemove", onMove);
       canvas.parentElement?.removeEventListener("mouseleave", onLeave);
     };
